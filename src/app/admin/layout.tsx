@@ -53,11 +53,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <button 
         className="mobile-menu-btn" 
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        style={{ position: 'fixed', top: '16px', right: '16px', zIndex: 200, display: 'none' }} // Hidden on desktop via CSS
+        style={{ position: 'fixed', top: '16px', right: '16px', zIndex: 200 }} 
       >
-        <span style={{ transform: isSidebarOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }}></span>
-        <span style={{ opacity: isSidebarOpen ? 0 : 1 }}></span>
-        <span style={{ transform: isSidebarOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none' }}></span>
+        <span style={{ transform: isSidebarOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none', background: 'var(--primary)' }}></span>
+        <span style={{ opacity: isSidebarOpen ? 0 : 1, background: 'var(--primary)' }}></span>
+        <span style={{ transform: isSidebarOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none', background: 'var(--primary)' }}></span>
       </button>
 
       {/* Overlay for mobile sidebar */}

@@ -1172,6 +1172,25 @@ img {
 .admin-layout {
   display: flex;
   min-height: 100vh;
+  
+  /* Force light theme colors for admin */
+  --bg: #fafaf8;
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-subtle: #f5f3ef;
+  --border: #e8e4de;
+  --border-light: #f0ece6;
+  --text: #1a1a1a;
+  --text-secondary: #6b6560;
+  --text-muted: #9e9890;
+  --primary: #e65100;
+  --primary-light: #ff833a;
+  --primary-dark: #ac1900;
+  --secondary: #1a1a2e;
+  --secondary-light: #16213e;
+  
+  background: var(--bg);
+  color: var(--text);
 }
 
 .admin-sidebar {
@@ -1607,6 +1626,22 @@ img {
   
   .navbar {
     display: none !important;
+  }
+
+  /* Admin Mobile Layout */
+  .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .admin-main {
+    margin-left: 0;
+    padding: var(--space-md);
+  }
+  .admin-table-wrapper {
+    overflow-x: auto;
   }
 
   /* Make bottom nav match */
