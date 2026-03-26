@@ -70,34 +70,6 @@ export default function AdminOrders() {
     }
   };
 
-  const handleSendBill = async (orderId: string) => {
-    try {
-      const btn = document.getElementById(`btn-send-${orderId}`);
-      if (btn) btn.innerHTML = '<span class="spinner" style="width: 14px; height: 14px; display: inline-block; border-width: 2px;"></span> Sending...';
-      
-      const res = await fetch(`/api/admin/orders/${orderId}/send-bill`, {
-        method: 'POST',
-      });
-      const data = await res.json();
-      
-      if (btn) btn.innerHTML = '<span style="fontSize: 1.1rem">✓</span> Sent!';
-      setTimeout(() => {
-        if (btn) btn.innerHTML = '<span style="fontSize: 1.1rem">📱</span> Send Bill';
-      }, 3000);
-
-      if (!res.ok) throw new Error(data.error || 'Failed to send bill');
-      
-      if (data.devMode) {
-        alert('Bill sent in DEV MODE. Check your terminal console to see the resulting message.');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Could not send bill. See console for details.');
-      const btn = document.getElementById(`btn-send-${orderId}`);
-      if (btn) btn.innerHTML = '<span style="fontSize: 1.1rem">📱</span> Send Bill';
-    }
-  };
-
   if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
 
   return (
@@ -219,14 +191,28 @@ export default function AdminOrders() {
                   </td>
                   <td>
                     <div className="actions">
-                      <button 
-                        id={`btn-send-${order.id}`}
-                        onClick={() => handleSendBill(order.id)}
+                      <a 
+                        href={`https://wa.me/${order.customerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(
+                          `*Spice Garden - Order Bill*\n` +
+                          `Order ID: #${order.id.slice(-6).toUpperCase()}\n` +
+                          `Name: ${order.customerName}\n` +
+                          (order.type === 'DINE_IN' ? `Table: ${order.tableNumber}\n` : `Type: Delivery\n`) +
+                          `Status: ${order.status.replace(/_/g, ' ')}\n\n` +
+                          `*Items ordered:*\n` +
+                          order.items.map((i: any) => `${i.quantity}x ${i.name} - ₹${i.price * i.quantity}`).join('\n') +
+                          `\n\n*Subtotal:* ₹${order.totalAmount}\n` +
+                          `*Taxes (5%):* ₹${Math.round(order.totalAmount * 0.05)}\n` +
+                          `*Total Paid:* ₹${order.totalAmount + Math.round(order.totalAmount * 0.05)}\n` +
+                          `*Payment via:* ${order.paymentMethod}\n\n` +
+                          `Thank you for ordering with us!`
+                        )}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
                         className="btn btn-success btn-sm"
-                        style={{ display: 'flex', alignItems: 'center', gap: '4px', border: 'none', cursor: 'pointer' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px', fontSize: '0.75rem', textDecoration: 'none' }}
                       >
-                        <span style={{ fontSize: '1.1rem' }}>📱</span> Send Bill
-                      </button>
+                        <span style={{ fontSize: '1rem' }}>📱</span> Send Bill
+                      </a>
                     </div>
                   </td>
                 </tr>
