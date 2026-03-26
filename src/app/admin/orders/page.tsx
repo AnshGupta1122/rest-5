@@ -283,6 +283,20 @@ export default function AdminOrders() {
                       >
                         <span style={{ fontSize: '1rem' }}>📱</span> Send Bill
                       </a>
+
+                      {order.status === 'OUT_FOR_DELIVERY' && (
+                        <a 
+                          href={`https://wa.me/${order.customerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(
+                            `*Order Update: OUT FOR DELIVERY* 🛵\n\nHi ${order.customerName}, your order *#${order.id.slice(-6).toUpperCase()}* from *${siteName}* is out for delivery! Our rider is on the way with your hot meal. 🍱\n\nTrack here: ${window.location.origin}/orders/${order.id}`
+                          )}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="btn btn-primary btn-sm"
+                          style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px', fontSize: '0.75rem', textDecoration: 'none', background: '#2e7d32', border: 'none' }}
+                        >
+                          🛵 Send Delivery Update
+                        </a>
+                      )}
                     </div>
                   </td>
                 </tr>

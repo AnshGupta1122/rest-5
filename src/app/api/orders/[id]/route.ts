@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { getAdminFromRequest } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
+import { sendWhatsAppMessage, sendSMSMessage } from '@/lib/notifications';
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -21,6 +22,15 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       where: { id },
       data: updateData,
     });
+
+    // Trigger notification if status changed to OUT_FOR_DELIVERY
+    if (status === 'OUT_FOR_DELIVERY') {
+      const orderIdShort = id.slice(-6).toUpperCase();
+      const message = `*Order Update: OUT FOR DELIVERY* 🛵\n\nHi ${order.customerName}, your order *#${orderIdShort}* is out for delivery! Our rider is on the way. 🍱\n\nTrack your order here: ${process.env.NEXT_PUBLIC_BASE_URL}/orders/${id}`;
+      
+      // Try WhatsApp first, then SMS
+      await sendWhatsAppMessage(order.customerPhone, message) || await sendSMSMessage(order.customerPhone, message);
+    }
 
     return NextResponse.json({
       ...order,

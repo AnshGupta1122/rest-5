@@ -1,80 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-
-async function sendViaWhatsApp(phone: string, code: string): Promise<boolean> {
-  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-  const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
-
-  if (!phoneNumberId || !accessToken) return false;
-
-  try {
-    // Format: Indian numbers need 91 prefix without +
-    const waNumber = phone.startsWith('91') ? phone : `91${phone}`;
-
-    const res = await fetch(
-      `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messaging_product: 'whatsapp',
-          to: waNumber,
-          type: 'text',
-          text: {
-            body: `Your OTP code is: *${code}*\n\nValid for 10 minutes. Do not share this with anyone.`,
-          },
-        }),
-      }
-    );
-
-    const data = await res.json();
-    if (data.messages && data.messages[0]?.id) {
-      console.log(`OTP sent via WhatsApp to ${phone} (ID: ${data.messages[0].id})`);
-      return true;
-    }
-    console.error('WhatsApp error:', JSON.stringify(data));
-    return false;
-  } catch (err) {
-    console.error('WhatsApp request failed:', err);
-    return false;
-  }
-}
-
-async function sendViaFast2SMS(phone: string, code: string): Promise<boolean> {
-  const apiKey = process.env.FAST2SMS_API_KEY;
-  if (!apiKey) return false;
-
-  try {
-    const res = await fetch('https://www.fast2sms.com/dev/bulkV2', {
-      method: 'POST',
-      headers: {
-        'authorization': apiKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        route: 'q',
-        message: `Your OTP code is: ${code}. Valid for 10 minutes.`,
-        language: 'english',
-        numbers: phone,
-        flash: '0',
-      }),
-    });
-
-    const data = await res.json();
-    if (data.return) {
-      console.log(`OTP sent via Fast2SMS to ${phone}`);
-      return true;
-    }
-    console.error('Fast2SMS error:', data);
-    return false;
-  } catch (err) {
-    console.error('Fast2SMS request failed:', err);
-    return false;
-  }
-}
+import { sendWhatsAppMessage, sendSMSMessage } from '@/lib/notifications';
 
 export async function POST(request: NextRequest) {
   try {
@@ -98,7 +24,8 @@ export async function POST(request: NextRequest) {
     });
 
     // Try sending via available providers (WhatsApp first, then SMS)
-    const sent = await sendViaWhatsApp(phone, code) || await sendViaFast2SMS(phone, code);
+    const otpMessage = `Your OTP code is: *${code}*\n\nValid for 10 minutes. Do not share this with anyone.`;
+    const sent = await sendWhatsAppMessage(phone, otpMessage) || await sendSMSMessage(phone, otpMessage);
 
     if (sent) {
       return NextResponse.json({
