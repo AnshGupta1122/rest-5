@@ -27,6 +27,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Load cart from sessionStorage on mount
   useEffect(() => {
+    // If there is an old permanent cart from before the update, actively destroy it
+    if (localStorage.getItem('cart')) {
+      localStorage.removeItem('cart');
+    }
+
     const saved = sessionStorage.getItem('cart');
     if (saved) {
       try {
