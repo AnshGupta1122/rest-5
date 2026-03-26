@@ -96,7 +96,7 @@ export default function MyOrdersPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-md)', paddingBottom: 'var(--space-md)', borderBottom: '1px solid var(--border-light)' }}>
                     <div>
                       <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '4px' }}>
-                        Order #{order.id.slice(-6).toUpperCase()} • {new Date(order.createdAt).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', month: 'short', day: 'numeric', year: 'numeric' })}
+                        Order #{order.id.slice(-6).toUpperCase()} • {new Date(order.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                       </div>
                       <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>{order.type.replace('_', ' ')} Order</div>
                     </div>
