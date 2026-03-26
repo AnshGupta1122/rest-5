@@ -29,8 +29,12 @@ export default function CartPage() {
       setIsLoggedIn(true);
       if (name) setCustomerName(name);
       setCustomerPhone(phone);
+    } else if (items.length > 0) {
+      // If they have items in cart but aren't logged in, instantly pop up the login modal
+      const event = new CustomEvent('trigger-customer-login', { detail: { force: true } });
+      window.dispatchEvent(event);
     }
-  }, []);
+  }, [items.length]);
   
   if (items.length === 0) {
     return (
