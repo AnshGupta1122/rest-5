@@ -211,7 +211,7 @@ export default function CartPage() {
                       { enableHighAccuracy: true }
                     );
                   }}
-                  style={{ marginTop: '8px', padding: '8px 16px', fontSize: '0.85rem', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', cursor: 'pointer', background: locationCoords ? '#e8f5e9' : 'var(--bg-subtle)', display: 'flex', alignItems: 'center', gap: '6px', width: '100%', justifyContent: 'center' }}
+                  style={{ marginTop: '8px', padding: '12px 16px', fontSize: '1rem', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', cursor: 'pointer', background: locationCoords ? 'var(--veg)' : 'transparent', color: locationCoords ? '#fff' : 'var(--primary)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', width: '100%', justifyContent: 'center' }}
                 >
                   {locating ? '📡 Getting location...' : locationCoords ? '✅ Location captured' : '📍 Use My Location'}
                 </button>
