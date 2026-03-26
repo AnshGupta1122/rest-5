@@ -54,7 +54,7 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
 
         {customerToken && (
           <div style={{ flex: 1, textAlign: 'center', pointerEvents: 'none' }}>
-            <span style={{ color: 'var(--text-secondary)' }}>Welcome, <strong style={{ color: 'var(--primary)', pointerEvents: 'auto' }}>{customerName || 'Guest'}</strong></span>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', fontWeight: 500, letterSpacing: '0.02em' }}>Welcome, <strong style={{ color: 'var(--primary)', pointerEvents: 'auto', fontWeight: 700 }}>{customerName || 'Guest'}</strong></span>
           </div>
         )}
 
@@ -71,7 +71,7 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
             {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
           </Link>
           {customerToken && (
-            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0, marginLeft: 'var(--space-sm)' }}>🚪 Logout</button>
+            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0, marginLeft: 'var(--space-2xl)' }}>🚪 Logout</button>
           )}
         </div>
 
@@ -89,7 +89,7 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
             <Link href="/menu" onClick={() => setIsMobileMenuOpen(false)}>Menu</Link>
             <Link href="/my-orders" onClick={() => setIsMobileMenuOpen(false)}>📦 My Orders</Link>
             {customerToken ? (
-              <span style={{ color: 'var(--text-secondary)', padding: 'var(--space-md) 0' }}>Welcome, <strong style={{ color: 'var(--primary)' }}>{customerName || 'Guest'}</strong></span>
+              <span style={{ color: 'var(--text-secondary)', padding: 'var(--space-md) 0', fontSize: '1.2rem', fontWeight: 500 }}>Welcome, <strong style={{ color: 'var(--primary)', fontWeight: 700 }}>{customerName || 'Guest'}</strong></span>
             ) : (
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>👤 Login</Link>
             )}
