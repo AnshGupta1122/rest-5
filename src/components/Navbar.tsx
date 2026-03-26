@@ -52,14 +52,18 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
           <span>{siteIcon}</span> {siteName}
         </Link>
 
+        {customerToken && (
+          <div style={{ flex: 1, textAlign: 'center', pointerEvents: 'none' }}>
+            <span style={{ color: 'var(--text-secondary)' }}>Welcome, <strong style={{ color: 'var(--primary)', pointerEvents: 'auto' }}>{customerName || 'Guest'}</strong></span>
+          </div>
+        )}
+
         {/* Desktop Menu */}
         <div className="navbar-links">
           <Link href="/">Home</Link>
           <Link href="/menu">Menu</Link>
           <Link href="/my-orders">📦 My Orders</Link>
-          {customerToken ? (
-            <span style={{ color: 'var(--text-secondary)' }}>Welcome, <strong style={{ color: 'var(--primary)' }}>{customerName || 'Guest'}</strong></span>
-          ) : (
+          {!customerToken && (
             <Link href="/login">👤 Login</Link>
           )}
           <Link href="/cart" className="cart-btn">
