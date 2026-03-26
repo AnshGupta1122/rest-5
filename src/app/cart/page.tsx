@@ -94,14 +94,14 @@ export default function CartPage() {
             <div key={item.id} className="cart-item">
               <div className="cart-item-emoji" style={{ overflow: 'hidden' }}>
                 {item.image && (item.image.startsWith('data:') || item.image.startsWith('http')) ? (
-                  <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: item.imagePosition || 'center' }} />
+                  <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: item.imagePosition || 'center', fontSize: '0.8rem', color: 'transparent' }} />
                 ) : (
                   <span>{item.image || '🍽️'}</span>
                 )}
               </div>
               <div className="cart-item-info">
                 <h4>
-                  <span className={`menu-card-badge ${item.isVeg ? 'veg' : 'non-veg'}`} style={{ display: 'inline-block', position: 'static', width: '12px', height: '12px', marginRight: '6px', verticalAlign: 'middle', borderWidth: '1px' }}></span>
+                  <span className={`menu-card-badge ${item.isVeg ? 'veg' : 'non-veg'}`} style={{ display: 'inline-flex', position: 'relative', top: 0, left: 0, width: '14px', height: '14px', marginRight: '6px', verticalAlign: 'middle', borderWidth: '1px' }}></span>
                   {item.name}
                 </h4>
                 <p>₹{item.price}</p>

@@ -26,7 +26,7 @@ export default function MenuCard({ item }: MenuCardProps) {
     <div className="menu-card">
       <div className="menu-card-image">
         {item.image && (item.image.startsWith('data:') || item.image.startsWith('http')) ? (
-          <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: item.imagePosition || 'center' }} />
+          <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: item.imagePosition || 'center', fontSize: '0.8rem', color: 'transparent' }} />
         ) : (
           <span className="emoji">{item.image || '🍽️'}</span>
         )}
