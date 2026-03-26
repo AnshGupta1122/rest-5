@@ -63,7 +63,7 @@ export default function LoginPopup() {
       localStorage.setItem('customer_name', data.name);
 
       setShow(false);
-      router.refresh();
+      window.location.reload();
     } catch (err: any) {
       setError(err.message);
     } finally {
