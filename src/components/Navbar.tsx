@@ -12,11 +12,14 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [customerToken, setCustomerToken] = useState<string | null>(null);
+  const [customerName, setCustomerName] = useState<string | null>(null);
 
   const handleLogout = () => {
     localStorage.removeItem('customer_token');
     localStorage.removeItem('customer_phone');
+    localStorage.removeItem('customer_name');
     setCustomerToken(null);
+    setCustomerName(null);
     router.push('/');
   };
 
@@ -28,6 +31,7 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
     
     // Simple check for auth state (re-runs on pathname change)
     setCustomerToken(localStorage.getItem('customer_token'));
+    setCustomerName(localStorage.getItem('customer_name'));
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, [pathname]);
@@ -54,7 +58,10 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
           <Link href="/menu">Menu</Link>
           <Link href="/my-orders">📦 My Orders</Link>
           {customerToken ? (
-            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0 }}>🚪 Logout</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>Welcome, <strong style={{ color: 'var(--primary)' }}>{customerName || 'Guest'}</strong></span>
+              <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0 }}>🚪 Logout</button>
+            </div>
           ) : (
             <Link href="/login">👤 Login</Link>
           )}
@@ -78,7 +85,10 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
             <Link href="/menu" onClick={() => setIsMobileMenuOpen(false)}>Menu</Link>
             <Link href="/my-orders" onClick={() => setIsMobileMenuOpen(false)}>📦 My Orders</Link>
             {customerToken ? (
-              <button onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0, textAlign: 'left' }}>🚪 Logout</button>
+              <>
+                <span style={{ color: 'var(--text-secondary)', padding: 'var(--space-md) 0' }}>Welcome, <strong style={{ color: 'var(--primary)' }}>{customerName || 'Guest'}</strong></span>
+                <button onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0, textAlign: 'left' }}>🚪 Logout</button>
+              </>
             ) : (
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>👤 Login</Link>
             )}
