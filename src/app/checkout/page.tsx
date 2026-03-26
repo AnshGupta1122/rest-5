@@ -12,6 +12,8 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [restaurantSettings, setRestaurantSettings] = useState<any>({});
 
+  const [utr, setUtr] = useState('');
+
   useEffect(() => {
     // Load checkout data
     const data = sessionStorage.getItem('checkout_data');
@@ -33,6 +35,11 @@ export default function CheckoutPage() {
   const orderTotal = totalAmount + Math.round(totalAmount * 0.05);
 
   const confirmOrder = async () => {
+    if (!utr || utr.trim().length < 6) {
+      alert('Please enter a valid Transaction / UTR Number from your payment app.');
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch('/api/orders', {
@@ -42,6 +49,7 @@ export default function CheckoutPage() {
           ...checkoutData,
           items: items.map(item => ({ id: item.id, quantity: item.quantity })),
           paymentMethod: 'UPI',
+          notes: `UTR: ${utr.trim()}${checkoutData.notes ? ' | ' + checkoutData.notes : ''}`,
         }),
       });
 
@@ -97,13 +105,12 @@ export default function CheckoutPage() {
         </div>
         
         <div className="payment-card">
-          <h3>Payment</h3>
+          <h3>Payment Verification</h3>
           <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-lg)' }}>
-            Please scan the QR code below using any UPI app (GPay, PhonePe, Paytm) to make the payment.
+            Please scan the QR code using any UPI app (GPay, PhonePe, Paytm) to make the payment.
           </p>
           
           <div className="qr-container">
-            {/* Generate a QR code pointing to the UPI URI using Google Chart API or similar */}
             <img 
               src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(restaurantSettings.upi_qr_data || 'upi://pay?pa=restaurant@upi')}&margin=0`} 
               alt="UPI QR Code" 
@@ -114,18 +121,30 @@ export default function CheckoutPage() {
           <div className="upi-id">
             UPI ID: {restaurantSettings.upi_id || 'restaurant@upi'}
           </div>
-          
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 'var(--space-xl)' }}>
-            Once you have completed the payment, click the button below to confirm your order.
-          </p>
+
+          <div className="form-group" style={{ marginTop: 'var(--space-lg)', marginBottom: 'var(--space-lg)' }}>
+            <label style={{ fontWeight: 600 }}>Enter Transaction ID (UTR) <span style={{ color: 'var(--error)' }}>*</span></label>
+            <input 
+              type="text" 
+              value={utr}
+              onChange={(e) => setUtr(e.target.value)}
+              placeholder="e.g. 312345678901" 
+              className="input-field"
+              style={{ marginTop: '8px', padding: '12px', width: '100%', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}
+              required 
+            />
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+              Your order will only be confirmed after verifying this transaction number.
+            </p>
+          </div>
           
           <button 
             className="btn btn-primary btn-lg" 
             style={{ width: '100%' }}
             onClick={confirmOrder}
-            disabled={loading}
+            disabled={loading || utr.trim().length < 6}
           >
-            {loading ? 'Processing...' : 'I have paid & Confirm Order'}
+            {loading ? 'Processing...' : 'Confirm Payment & Order'}
           </button>
         </div>
       </div>

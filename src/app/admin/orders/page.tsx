@@ -147,15 +147,20 @@ export default function AdminOrders() {
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>
                       via {order.paymentMethod}
                     </div>
+                    {order.notes && order.notes.includes('UTR:') && (
+                      <div style={{ fontSize: '0.8rem', background: '#fff3e0', border: '1px solid #ffe0b2', padding: '4px', borderRadius: '4px', margin: '4px 0', wordBreak: 'break-all' }}>
+                        <strong>{order.notes}</strong>
+                      </div>
+                    )}
                     {order.isPaid ? (
-                      <span className="status-badge ready" style={{ fontSize: '0.7rem' }}>Paid</span>
+                      <span className="status-badge ready" style={{ fontSize: '0.7rem' }}>Paid Verified</span>
                     ) : (
                       <button 
-                        className="btn btn-outline btn-sm" 
-                        style={{ padding: '2px 8px', fontSize: '0.75rem' }}
+                        className="btn btn-warning btn-sm" 
+                        style={{ padding: '4px 8px', fontSize: '0.75rem', marginTop: '4px', border: 'none', background: '#f57c00', color: '#fff', borderRadius: '4px', cursor: 'pointer' }}
                         onClick={() => markAsPaid(order.id)}
                       >
-                        Mark Paid
+                        Verify & Mark Paid
                       </button>
                     )}
                   </td>
