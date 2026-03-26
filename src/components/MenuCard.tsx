@@ -49,7 +49,7 @@ export default function MenuCard({ item }: MenuCardProps) {
             </div>
           ) : (
             <button 
-              className="add-to-cart-btn pulse-animation"
+              className="add-to-cart-btn"
               onClick={() => addItem({
                 id: item.id,
                 name: item.name,

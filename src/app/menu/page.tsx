@@ -28,25 +28,8 @@ export default function MenuPage() {
 
   if (loading) {
     return (
-      <div className="section" style={{ paddingTop: 'calc(var(--navbar-height) + var(--space-2xl))' }}>
-        <div className="section-inner">
-          <div className="skeleton" style={{ height: '40px', width: '250px', borderRadius: '8px', marginBottom: 'var(--space-2xl)' }} />
-          <div className="menu-grid">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="menu-card" style={{ display: 'flex', flexDirection: 'column' }}>
-                <div className="skeleton" style={{ height: '180px', width: '100%', borderTopLeftRadius: 'var(--radius-md)', borderTopRightRadius: 'var(--radius-md)' }} />
-                <div style={{ padding: 'var(--space-lg)', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div className="skeleton" style={{ height: '24px', width: '70%', borderRadius: '4px', marginBottom: 'var(--space-sm)' }} />
-                  <div className="skeleton" style={{ height: '16px', width: '40%', borderRadius: '4px', marginBottom: 'var(--space-xl)' }} />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 'auto' }}>
-                     <div className="skeleton" style={{ height: '28px', width: '30%', borderRadius: '4px' }} />
-                     <div className="skeleton" style={{ height: '40px', width: '90px', borderRadius: '24px' }} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="loading-spinner" style={{ minHeight: '60vh' }}>
+        <div className="spinner"></div>
       </div>
     );
   }
