@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [restaurantSettings, setRestaurantSettings] = useState<any>({});
 
+  const [paymentMethod, setPaymentMethod] = useState('UPI');
   const [utr, setUtr] = useState('');
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function CheckoutPage() {
   const orderTotal = totalAmount + Math.round(totalAmount * 0.05);
 
   const confirmOrder = async () => {
-    if (!utr || utr.trim().length < 6) {
+    if (paymentMethod === 'UPI' && (!utr || utr.trim().length < 6)) {
       alert('Please enter a valid Transaction / UTR Number from your payment app.');
       return;
     }
@@ -48,8 +49,10 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           ...checkoutData,
           items: items.map(item => ({ id: item.id, quantity: item.quantity })),
-          paymentMethod: 'UPI',
-          notes: `UTR: ${utr.trim()}${checkoutData.notes ? ' | ' + checkoutData.notes : ''}`,
+          paymentMethod: paymentMethod,
+          notes: paymentMethod === 'UPI' 
+            ? `UTR: ${utr.trim()}${checkoutData.notes ? ' | ' + checkoutData.notes : ''}`
+            : checkoutData.notes,
         }),
       });
 
@@ -105,46 +108,69 @@ export default function CheckoutPage() {
         </div>
         
         <div className="payment-card">
-          <h3>Payment Verification</h3>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-lg)' }}>
-            Please scan the QR code using any UPI app (GPay, PhonePe, Paytm) to make the payment.
-          </p>
+          <h3 style={{ marginBottom: 'var(--space-md)' }}>Payment Method</h3>
           
-          <div className="qr-container">
-            <img 
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(restaurantSettings.upi_qr_data || 'upi://pay?pa=restaurant@upi')}&margin=0`} 
-              alt="UPI QR Code" 
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-            />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', cursor: 'pointer', padding: 'var(--space-md)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', background: paymentMethod === 'UPI' ? 'var(--bg-subtle)' : 'transparent', transition: 'all 0.2s' }}>
+              <input type="radio" name="payment" value="UPI" checked={paymentMethod === 'UPI'} onChange={() => setPaymentMethod('UPI')} />
+              <span style={{ fontWeight: 600 }}>UPI (GPay, PhonePe, Paytm)</span>
+            </label>
+            
+            {checkoutData.orderType === 'DELIVERY' && (
+              <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', cursor: 'pointer', padding: 'var(--space-md)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', background: paymentMethod === 'Cash on Delivery' ? 'var(--bg-subtle)' : 'transparent', transition: 'all 0.2s' }}>
+                <input type="radio" name="payment" value="Cash on Delivery" checked={paymentMethod === 'Cash on Delivery'} onChange={() => setPaymentMethod('Cash on Delivery')} />
+                <span style={{ fontWeight: 600 }}>Cash on Delivery</span>
+              </label>
+            )}
+            
+            {checkoutData.orderType === 'DINE_IN' && (
+              <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', cursor: 'pointer', padding: 'var(--space-md)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', background: paymentMethod === 'Pay at Counter' ? 'var(--bg-subtle)' : 'transparent', transition: 'all 0.2s' }}>
+                <input type="radio" name="payment" value="Pay at Counter" checked={paymentMethod === 'Pay at Counter'} onChange={() => setPaymentMethod('Pay at Counter')} />
+                <span style={{ fontWeight: 600 }}>Pay at Counter</span>
+              </label>
+            )}
           </div>
           
-          <div className="upi-id">
-            UPI ID: {restaurantSettings.upi_id || 'restaurant@upi'}
-          </div>
+          {paymentMethod === 'UPI' && (
+            <div style={{ padding: 'var(--space-md)', background: '#fafafa', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border)', marginBottom: 'var(--space-lg)' }}>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-md)', textAlign: 'center', fontSize: '0.9rem' }}>
+                Please scan the QR code using any UPI app.
+              </p>
+              
+              <div className="qr-container" style={{ margin: '0 auto', maxWidth: '200px' }}>
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(restaurantSettings.upi_qr_data || 'upi://pay?pa=restaurant@upi')}&margin=0`} 
+                  alt="UPI QR Code" 
+                  style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '8px' }}
+                />
+              </div>
+              
+              <div className="upi-id" style={{ marginTop: 'var(--space-sm)' }}>
+                UPI ID: {restaurantSettings.upi_id || 'restaurant@upi'}
+              </div>
 
-          <div className="form-group" style={{ marginTop: 'var(--space-lg)', marginBottom: 'var(--space-lg)' }}>
-            <label style={{ fontWeight: 600 }}>Enter Transaction ID (UTR) <span style={{ color: 'var(--error)' }}>*</span></label>
-            <input 
-              type="text" 
-              value={utr}
-              onChange={(e) => setUtr(e.target.value)}
-              placeholder="e.g. 312345678901" 
-              className="input-field"
-              style={{ marginTop: '8px', padding: '12px', width: '100%', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}
-              required 
-            />
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-              Your order will only be confirmed after verifying this transaction number.
-            </p>
-          </div>
+              <div className="form-group" style={{ marginTop: 'var(--space-md)' }}>
+                <label style={{ fontWeight: 600, fontSize: '0.9rem' }}>Enter Transaction ID (UTR) <span style={{ color: 'var(--error)' }}>*</span></label>
+                <input 
+                  type="text" 
+                  value={utr}
+                  onChange={(e) => setUtr(e.target.value)}
+                  placeholder="e.g. 312345678901" 
+                  className="input-field"
+                  style={{ marginTop: '4px', padding: '10px', width: '100%', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)' }}
+                  required={paymentMethod === 'UPI'}
+                />
+              </div>
+            </div>
+          )}
           
           <button 
             className="btn btn-primary btn-lg" 
             style={{ width: '100%' }}
             onClick={confirmOrder}
-            disabled={loading || utr.trim().length < 6}
+            disabled={loading || (paymentMethod === 'UPI' && utr.trim().length < 6)}
           >
-            {loading ? 'Processing...' : 'Confirm Payment & Order'}
+            {loading ? 'Processing...' : `Confirm Order (${paymentMethod})`}
           </button>
         </div>
       </div>
