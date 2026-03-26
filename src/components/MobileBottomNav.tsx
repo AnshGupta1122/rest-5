@@ -37,7 +37,7 @@ export default function MobileBottomNav() {
           >
             <span className="mobile-bottom-nav-icon">
               {tab.icon}
-              {tab.badge ? <span className="mobile-bottom-nav-badge">{tab.badge}</span> : null}
+              {tab.badge ? <span className="mobile-bottom-nav-badge pulse-animation">{tab.badge}</span> : null}
             </span>
             <span className="mobile-bottom-nav-label">{tab.label}</span>
           </Link>

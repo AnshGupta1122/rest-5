@@ -4,6 +4,17 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <>
+      <div style={{ 
+        background: 'linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%)', 
+        color: 'white', 
+        textAlign: 'center', 
+        padding: '12px var(--space-md)',
+        fontWeight: '600',
+        fontSize: '0.95rem',
+        marginTop: 'var(--navbar-height)'
+      }}>
+        🎉 50% OFF up to ₹100 on your first order! Use code <span style={{ background: 'white', color: 'var(--primary)', padding: '2px 8px', borderRadius: '4px', marginLeft: '6px' }}>WELCOME50</span>
+      </div>
       <section className="hero">
         <div className="hero-inner">
           <div className="hero-content">
@@ -18,7 +29,7 @@ export default function Home() {
               and the freshest local ingredients.
             </p>
             <div className="hero-actions">
-              <Link href="/menu" className="btn btn-primary btn-lg">
+              <Link href="/menu" className="btn btn-primary btn-lg pulse-animation">
                 Explore Menu
               </Link>
               <Link href="#features" className="btn btn-outline btn-lg">
@@ -83,7 +94,7 @@ export default function Home() {
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', marginBottom: 'var(--space-lg)' }}>
             Ready to satisfy your cravings?
           </h2>
-          <Link href="/menu" className="btn btn-primary btn-lg">
+          <Link href="/menu" className="btn btn-primary btn-lg pulse-animation">
             Order Now
           </Link>
         </div>

@@ -1,17 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* Color Palette - Saffron & Deep Red Theme */
-  --primary: #f4b41a;
-  --primary-light: #ffc259;
-  --primary-dark: #cc8400;
-  --primary-glow: rgba(244, 180, 26, 0.15);
+  /* Color Palette - Swiggy/Zomato Light Theme */
+  --primary: #e23744; /* Zomato Red */
+  --primary-light: #ff5e6b;
+  --primary-dark: #b8222e;
+  --primary-glow: rgba(226, 55, 68, 0.15);
   
-  --secondary: #1a0500;
-  --secondary-light: #2a0800;
+  --secondary: #1c1c1c; /* Dark text for headings */
+  --secondary-light: #333333;
   
-  --accent: #f9a825;
-  --accent-light: #ffd95a;
+  --accent: #fba026; /* Warm Orange/Yellow */
+  --accent-light: #ffc266;
   
   --success: #4caf50;
   --success-bg: rgba(76, 175, 80, 0.1);
@@ -19,20 +20,20 @@
   --danger: #d43f3a;
   --danger-bg: rgba(212, 63, 58, 0.1);
 
-  /* Neutrals - Dark Mode */
-  --bg: #2a0800;
-  --bg-card: #3a0d01;
-  --bg-elevated: #461102; 
-  --bg-subtle: #461102;
-  --border: #591603;
-  --border-light: #591603;
-  --text: #fdf5e6;
-  --text-secondary: #dcbfa3;
-  --text-muted: #a88d74;
+  /* Neutrals - High Conversion Light Mode */
+  --bg: #f8f9fa; /* Very clean light off-white */
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff; 
+  --bg-subtle: #f0f2f5; /* Subtle gray for inputs */
+  --border: #e9ecef;
+  --border-light: #f1f3f5;
+  --text: #212529; /* High contrast reading text */
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
 
   /* Veg/Non-Veg */
-  --veg: #4caf50;
-  --non-veg: #f44336;
+  --veg: #228b22;
+  --non-veg: #d32f2f;
 
   /* Spacing */
   --space-xs: 4px;
@@ -44,23 +45,23 @@
   --space-3xl: 64px;
   --space-4xl: 96px;
 
-  /* Border radius */
+  /* Border radius (Modern app feel) */
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-  --shadow-lg: 0 12px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05);
-  --shadow-xl: 0 24px 60px rgba(0,0,0,0.12), 0 8px 20px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 30px rgba(230, 81, 0, 0.2);
+  /* Shadows (Softer, modern) */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+  --shadow-lg: 0 16px 32px rgba(0,0,0,0.08);
+  --shadow-xl: 0 24px 48px rgba(0,0,0,0.1);
+  --shadow-glow: 0 0 24px rgba(226, 55, 68, 0.2);
 
   /* Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Poppins', 'Playfair Display', Georgia, serif;
 
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -122,7 +123,7 @@ img {
   left: 0;
   right: 0;
   height: var(--navbar-height);
-  background: rgba(42, 8, 0, 0.85); /* Dark background with transparency */
+  background: rgba(255, 255, 255, 0.85); /* Changed back to light */
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-light);
@@ -131,7 +132,7 @@ img {
 }
 
 .navbar.scrolled {
-  background: rgba(42, 8, 0, 0.95);
+  background: rgba(255, 255, 255, 0.95);
   box-shadow: var(--shadow-sm);
 }
 
@@ -256,7 +257,7 @@ img {
 /* ==================== HERO ==================== */
 .hero {
   padding: calc(var(--navbar-height) + var(--space-4xl)) var(--space-lg) var(--space-4xl);
-  background: linear-gradient(135deg, #3a0d01 0%, #2a0800 100%);
+  background: linear-gradient(135deg, #fff5f2 0%, #fff 100%);
   position: relative;
   overflow: hidden;
 }
@@ -549,7 +550,7 @@ img {
 
 .menu-card-image {
   height: 180px;
-  background: linear-gradient(135deg, #3a0d01 0%, #461102 100%);
+  background: linear-gradient(135deg, #fff5f2 0%, #fff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -800,7 +801,7 @@ img {
 .cart-item-emoji {
   width: 64px;
   height: 64px;
-  background: linear-gradient(135deg, #3a0d01, #461102);
+  background: linear-gradient(135deg, #fff5f2 0%, #fff 100%);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -1463,7 +1464,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #3a0d01 0%, #461102 100%);
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
   padding: var(--space-lg);
 }
 
@@ -1572,7 +1573,7 @@ img {
 /* ==================== PAGE TITLE ==================== */
 .page-title {
   padding: calc(var(--navbar-height) + var(--space-xl)) var(--space-lg) var(--space-xl);
-  background: linear-gradient(135deg, #3a0d01 0%, #2a0800 100%);
+  background: linear-gradient(135deg, #fff5f2 0%, #ffffff 100%);
 }
 
 .page-title h1 {
@@ -1611,11 +1612,11 @@ img {
 
   /* Make bottom nav match */
   .mobile-bottom-nav {
-    background: #1a0500 !important;
-    border-top: 1px solid #3a0d01 !important;
+    background: var(--bg-card) !important;
+    border-top: 1px solid var(--border-light) !important;
   }
   .mobile-bottom-nav-item.active {
-    color: #f4b41a !important;
+    color: var(--primary) !important;
   }
 
   .hero h1 { font-size: 2.5rem; }
@@ -1764,4 +1765,32 @@ img {
   .footer {
     padding-bottom: 80px;
   }
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(226, 55, 68, 0.4); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(226, 55, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(226, 55, 68, 0); }
+}
+
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.skeleton {
+  background: #f6f7f8;
+  background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-repeat: no-repeat;
+  background-size: 1000px 100%;
+  animation-duration: 1.5s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: shimmer;
+  animation-timing-function: linear;
 }
