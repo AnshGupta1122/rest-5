@@ -201,16 +201,17 @@ img {
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
-  background: var(--primary);
-  color: white;
+  background: var(--primary) !important;
+  color: var(--secondary) !important; /* Dark text on yellow button */
   border-radius: var(--radius-full);
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 0.95rem;
   transition: var(--transition-base);
 }
 
 .cart-btn:hover {
-  background: var(--primary-dark);
+  background: var(--primary-dark) !important;
+  color: var(--secondary) !important;
   transform: translateY(-1px);
   box-shadow: var(--shadow-glow);
 }
