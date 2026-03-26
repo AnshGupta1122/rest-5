@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import LoginPopup from '@/components/LoginPopup';
 import { CartProvider } from '@/context/CartContext';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${playfair.variable}`}>
         <CartProvider>
+          <LoginPopup />
           <Navbar />
           <main>{children}</main>
           <Footer />
