@@ -192,6 +192,7 @@ export default function CartPage() {
                 ></textarea>
                 <button 
                   type="button" 
+                  className="btn-outline"
                   onClick={() => {
                     if (!navigator.geolocation) {
                       alert('Geolocation is not supported by your browser');
