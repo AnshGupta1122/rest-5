@@ -130,6 +130,20 @@ export default function AdminOrders() {
                         {order.customerAddress}
                       </div>
                     )}
+                    {order.type === 'DELIVERY' && order.notes && order.notes.includes('GPS:') && (() => {
+                      const gpsMatch = order.notes.match(/GPS:([\d.-]+),([\d.-]+)/);
+                      if (!gpsMatch) return null;
+                      return (
+                        <a
+                          href={`https://www.google.com/maps?q=${gpsMatch[1]},${gpsMatch[2]}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontSize: '0.75rem', color: '#1976d2', textDecoration: 'none', padding: '3px 8px', background: '#e3f2fd', borderRadius: '4px', fontWeight: 600 }}
+                        >
+                          📍 View on Map
+                        </a>
+                      );
+                    })()}
                   </td>
                   <td>
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.85rem' }}>

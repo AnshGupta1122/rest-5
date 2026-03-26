@@ -55,9 +55,11 @@ export default function CheckoutPage() {
           type: checkoutData.orderType,
           items: items.map(item => ({ id: item.id, quantity: item.quantity })),
           paymentMethod: paymentMethod,
-          notes: paymentMethod === 'UPI' 
-            ? `UTR: ${utr.trim()}${checkoutData.notes ? ' | ' + checkoutData.notes : ''}`
-            : checkoutData.notes,
+          notes: [
+            paymentMethod === 'UPI' ? `UTR: ${utr.trim()}` : '',
+            checkoutData.notes || '',
+            checkoutData.locationCoords ? `GPS:${checkoutData.locationCoords.lat},${checkoutData.locationCoords.lng}` : '',
+          ].filter(Boolean).join(' | ') || null,
         }),
       });
 

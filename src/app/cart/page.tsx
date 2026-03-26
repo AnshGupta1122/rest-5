@@ -15,6 +15,8 @@ export default function CartPage() {
   const [customerEmail, setCustomerEmail] = useState('');
   const [tableNumber, setTableNumber] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
+  const [locationCoords, setLocationCoords] = useState<{lat: number, lng: number} | null>(null);
+  const [locating, setLocating] = useState(false);
   
   if (items.length === 0) {
     return (
@@ -58,6 +60,7 @@ export default function CartPage() {
       customerEmail,
       tableNumber: orderType === 'DINE_IN' ? tableNumber : '',
       customerAddress: orderType === 'DELIVERY' ? customerAddress : '',
+      locationCoords: orderType === 'DELIVERY' ? locationCoords : null,
     }));
     
     router.push('/checkout');
@@ -170,6 +173,35 @@ export default function CartPage() {
                   onChange={e => setCustomerAddress(e.target.value)}
                   placeholder="Complete address with landmark"
                 ></textarea>
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    if (!navigator.geolocation) {
+                      alert('Geolocation is not supported by your browser');
+                      return;
+                    }
+                    setLocating(true);
+                    navigator.geolocation.getCurrentPosition(
+                      (pos) => {
+                        setLocationCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+                        setLocating(false);
+                      },
+                      (err) => {
+                        alert('Unable to get location. Please allow location access.');
+                        setLocating(false);
+                      },
+                      { enableHighAccuracy: true }
+                    );
+                  }}
+                  style={{ marginTop: '8px', padding: '8px 16px', fontSize: '0.85rem', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', cursor: 'pointer', background: locationCoords ? '#e8f5e9' : 'var(--bg-subtle)', display: 'flex', alignItems: 'center', gap: '6px', width: '100%', justifyContent: 'center' }}
+                >
+                  {locating ? '📡 Getting location...' : locationCoords ? '✅ Location captured' : '📍 Use My Location'}
+                </button>
+                {locationCoords && (
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                    📍 {locationCoords.lat.toFixed(6)}, {locationCoords.lng.toFixed(6)}
+                  </div>
+                )}
               </div>
             )}
             
