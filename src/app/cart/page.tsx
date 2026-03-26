@@ -12,7 +12,6 @@ export default function CartPage() {
   const [orderType, setOrderType] = useState('DINE_IN');
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
-  const [customerEmail, setCustomerEmail] = useState('');
   const [tableNumber, setTableNumber] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [locationCoords, setLocationCoords] = useState<{lat: number, lng: number} | null>(null);
@@ -55,8 +54,8 @@ export default function CartPage() {
     e.preventDefault();
     
     // Validate
-    if (!customerName || !customerPhone || !customerEmail) {
-      alert('Please enter your name, phone, and email');
+    if (!customerName || !customerPhone) {
+      alert('Please enter your name and phone number');
       return;
     }
     
@@ -75,7 +74,6 @@ export default function CartPage() {
       orderType,
       customerName,
       customerPhone,
-      customerEmail,
       tableNumber: orderType === 'DINE_IN' ? tableNumber : '',
       customerAddress: orderType === 'DELIVERY' ? customerAddress : '',
       locationCoords: orderType === 'DELIVERY' ? locationCoords : null,
@@ -94,7 +92,13 @@ export default function CartPage() {
         <div className="cart-items">
           {items.map(item => (
             <div key={item.id} className="cart-item">
-              <div className="cart-item-emoji">🍽️</div>
+              <div className="cart-item-emoji" style={{ overflow: 'hidden' }}>
+                {item.image && (item.image.startsWith('data:') || item.image.startsWith('http')) ? (
+                  <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: item.imagePosition || 'center' }} />
+                ) : (
+                  <span>{item.image || '🍽️'}</span>
+                )}
+              </div>
               <div className="cart-item-info">
                 <h4>
                   <span className={`menu-card-badge ${item.isVeg ? 'veg' : 'non-veg'}`} style={{ display: 'inline-block', position: 'static', width: '12px', height: '12px', marginRight: '6px', verticalAlign: 'middle', borderWidth: '1px' }}></span>
@@ -164,16 +168,7 @@ export default function CartPage() {
               />
             </div>
 
-            <div className="form-group">
-              <label>Email Address</label>
-              <input 
-                type="email" 
-                required 
-                value={customerEmail}
-                onChange={e => setCustomerEmail(e.target.value.toLowerCase())}
-                placeholder="you@email.com"
-              />
-            </div>
+
             
             {orderType === 'DINE_IN' ? (
               <div className="form-group">

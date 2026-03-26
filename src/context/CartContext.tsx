@@ -8,6 +8,8 @@ export interface CartItem {
   price: number;
   quantity: number;
   isVeg: boolean;
+  image?: string | null;
+  imagePosition?: string;
 }
 
 interface CartContextType {

@@ -54,7 +54,9 @@ export default function MenuCard({ item }: MenuCardProps) {
                 id: item.id,
                 name: item.name,
                 price: item.price,
-                isVeg: item.isVeg
+                isVeg: item.isVeg,
+                image: item.image,
+                imagePosition: item.imagePosition
               })}
             >
               Add +
