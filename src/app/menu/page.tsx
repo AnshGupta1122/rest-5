@@ -11,6 +11,7 @@ export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [vegOnly, setVegOnly] = useState(false);
+  const [nonVegOnly, setNonVegOnly] = useState(false);
 
   useEffect(() => {
     fetch('/api/menu')
@@ -80,10 +81,18 @@ export default function MenuPage() {
             
             <button 
               className={`veg-toggle ${vegOnly ? 'active' : ''}`}
-              onClick={() => setVegOnly(!vegOnly)}
+              onClick={() => { setVegOnly(!vegOnly); setNonVegOnly(false); }}
             >
               <div className="menu-card-badge veg" style={{ position: 'relative', top: 0, left: 0 }}></div>
               Veg Only
+            </button>
+            <button 
+              className={`veg-toggle ${nonVegOnly ? 'active' : ''}`}
+              onClick={() => { setNonVegOnly(!nonVegOnly); setVegOnly(false); }}
+              style={{ marginLeft: 'var(--space-md)' }}
+            >
+              <div className="menu-card-badge non-veg" style={{ position: 'relative', top: 0, left: 0 }}></div>
+              Non-Veg Only
             </button>
           </div>
 
@@ -111,7 +120,8 @@ export default function MenuPage() {
                 const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                                       (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
                 const matchesVeg = !vegOnly || item.isVeg;
-                return matchesSearch && matchesVeg;
+                const matchesNonVeg = !nonVegOnly || !item.isVeg;
+                return matchesSearch && matchesVeg && matchesNonVeg;
               });
 
               if (filteredItems.length === 0) return null;
@@ -132,7 +142,8 @@ export default function MenuPage() {
             
             {!categories.some(cat => cat.items.some((item: any) => 
                (item.name.toLowerCase().includes(searchQuery.toLowerCase()) || (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()))) && 
-               (!vegOnly || item.isVeg)
+               (!vegOnly || item.isVeg) &&
+               (!nonVegOnly || !item.isVeg)
             )) && (
               <div style={{ textAlign: 'center', padding: 'var(--space-3xl) 0', color: 'var(--text-secondary)' }}>
                 <h3>No items found</h3>
