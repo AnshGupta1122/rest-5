@@ -12,7 +12,7 @@ function CustomerLoginForm() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnTo = searchParams.get('returnTo') || '/my-orders';
+  const returnTo = searchParams.get('returnTo') || '/';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
