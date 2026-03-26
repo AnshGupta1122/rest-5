@@ -7,6 +7,7 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
   const [timeFilter, setTimeFilter] = useState('TODAY');
+  const [siteName, setSiteName] = useState('Spice Garden');
 
   const fetchOrders = async () => {
     const token = localStorage.getItem('admin_token');
@@ -20,6 +21,12 @@ export default function AdminOrders() {
       const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       setOrders(data);
+      
+      try {
+        const setRes = await fetch('/api/admin/settings', { headers: { Authorization: `Bearer ${token}` } });
+        const setData = await setRes.json();
+        if (setData.restaurant_name) setSiteName(setData.restaurant_name);
+      } catch (e) {}
     } catch (error) {
       console.error('Failed to fetch orders', error);
     } finally {
@@ -230,7 +237,7 @@ export default function AdminOrders() {
                     <div className="actions">
                       <a 
                         href={`https://wa.me/${order.customerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(
-                          `*Spice Garden - Order Bill*\n` +
+                          `*${siteName} - Order Bill*\n` +
                           `Order ID: #${order.id.slice(-6).toUpperCase()}\n` +
                           `Name: ${order.customerName}\n` +
                           (order.type === 'DINE_IN' ? `Table: ${order.tableNumber}\n` : `Type: Delivery\n`) +

@@ -9,6 +9,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [siteName, setSiteName] = useState('Spice Garden');
 
   // Check authentication
   useEffect(() => {
@@ -23,6 +24,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       router.push('/admin/login');
     } else {
       setIsAuthenticated(true);
+      
+      // Fetch restaurant name
+      fetch('/api/admin/settings', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.restaurant_name) setSiteName(data.restaurant_name);
+      })
+      .catch(err => console.error(err));
     }
   }, [pathname, router]);
 
@@ -71,7 +82,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="admin-sidebar-logo">
-          Spice Garden
+          {siteName}
           <small>Admin Panel</small>
         </div>
 

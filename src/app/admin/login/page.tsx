@@ -46,7 +46,7 @@ export default function AdminLogin() {
     <div className="login-page">
       <div className="login-card">
         <h1>Admin Portal</h1>
-        <p className="subtitle">Spice Garden Restaurant System</p>
+        <p className="subtitle">Restaurant Management System</p>
 
         {error && <div className="login-error">{error}</div>}
 

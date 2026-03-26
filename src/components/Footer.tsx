@@ -1,9 +1,21 @@
-export default function Footer() {
+import { prisma } from '@/lib/prisma';
+
+export default async function Footer({ siteName = 'Spice Garden' }: { siteName?: string }) {
+  let phone = '+91 98765 43210';
+  let address = '123 Food Street, Mumbai';
+  
+  try {
+    const p = await prisma.settings.findUnique({ where: { key: 'restaurant_phone' } });
+    const a = await prisma.settings.findUnique({ where: { key: 'restaurant_address' } });
+    if (p?.value) phone = p.value;
+    if (a?.value) address = a.value;
+  } catch(e) {}
+
   return (
     <footer className="footer">
       <div className="footer-inner">
         <div className="footer-brand">
-          <h3>Spice Garden</h3>
+          <h3>{siteName}</h3>
           <p>
             Experience the authentic taste of Indian cuisine. 
             Prepared with fresh ingredients and traditional recipes 
@@ -20,14 +32,13 @@ export default function Footer() {
         
         <div className="footer-links">
           <h4>Contact Us</h4>
-          <p>📍 123 Food Street, Mumbai</p>
-          <p>📞 +91 98765 43210</p>
-          <p>✉️ hello@spicegarden.com</p>
+          <p>📍 {address}</p>
+          <p>📞 {phone}</p>
         </div>
       </div>
       
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} Spice Garden. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} {siteName}. All rights reserved.</p>
       </div>
     </footer>
   );
