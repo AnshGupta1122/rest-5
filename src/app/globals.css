@@ -1658,3 +1658,81 @@ img {
   .hero-actions { flex-direction: column; align-items: center; }
   .page-title h1 { font-size: 2rem; }
 }
+
+/* ==================== MOBILE BOTTOM NAV ==================== */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--bg-card, #fff);
+    border-top: 1px solid var(--border-light, #eee);
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+    padding: 4px 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobile-bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 0;
+    text-decoration: none;
+    color: var(--text-muted, #999);
+    transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-bottom-nav-item.active {
+    color: var(--primary, #e65100);
+  }
+
+  .mobile-bottom-nav-icon {
+    position: relative;
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  .mobile-bottom-nav-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: var(--primary, #e65100);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+  }
+
+  .mobile-bottom-nav-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  /* Add padding to body so content isn't hidden behind bottom nav */
+  main {
+    padding-bottom: 70px;
+  }
+
+  /* Hide footer on mobile since bottom nav replaces it */
+  .footer {
+    padding-bottom: 80px;
+  }
+}
