@@ -6,13 +6,17 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
+  const [timeFilter, setTimeFilter] = useState('TODAY');
 
   const fetchOrders = async () => {
     const token = localStorage.getItem('admin_token');
     if (!token) return;
 
     try {
-      const url = filter === 'ALL' ? '/api/orders' : `/api/orders?status=${filter}`;
+      let url = '/api/orders?';
+      if (filter !== 'ALL') url += `status=${filter}&`;
+      if (timeFilter !== 'ALL_TIME') url += `timeFilter=${timeFilter}&`;
+      
       const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       setOrders(data);
@@ -29,7 +33,7 @@ export default function AdminOrders() {
     // Auto refresh orders every 30 seconds
     const interval = setInterval(fetchOrders, 30000);
     return () => clearInterval(interval);
-  }, [filter]);
+  }, [filter, timeFilter]);
 
   const updateOrderStatus = async (id: string, newStatus: string) => {
     const token = localStorage.getItem('admin_token');
@@ -74,8 +78,27 @@ export default function AdminOrders() {
 
   return (
     <>
-      <div className="admin-header">
-        <h1>Order Management</h1>
+      <div className="admin-header" style={{ flexWrap: 'wrap', gap: 'var(--space-md)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', flexWrap: 'wrap' }}>
+          <h1 style={{ margin: 0 }}>Order Management</h1>
+          <select 
+            value={timeFilter} 
+            onChange={(e) => { setLoading(true); setTimeFilter(e.target.value); }}
+            style={{ 
+              padding: '8px 12px', 
+              borderRadius: '8px', 
+              border: '1px solid var(--border)', 
+              background: 'var(--bg-card)', 
+              color: 'var(--text)',
+              fontSize: '0.9rem' 
+            }}
+          >
+            <option value="TODAY">Today</option>
+            <option value="YESTERDAY">Yesterday</option>
+            <option value="LAST_10_DAYS">Last 10 Days</option>
+            <option value="ALL_TIME">All Time</option>
+          </select>
+        </div>
         
         <div className="category-tabs" style={{ marginBottom: 0 }}>
           {['ALL', 'PENDING', 'CONFIRMED', 'PREPARING', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'].map(status => (

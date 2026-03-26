@@ -65,10 +65,31 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
     const type = searchParams.get('type');
+    const timeFilter = searchParams.get('timeFilter');
 
-    const where: Record<string, string> = {};
+    const where: any = {};
     if (status) where.status = status;
     if (type) where.type = type;
+
+    if (timeFilter) {
+      if (timeFilter === 'TODAY') {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        where.createdAt = { gte: startOfDay };
+      } else if (timeFilter === 'YESTERDAY') {
+        const startOfYesterday = new Date();
+        startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+        startOfYesterday.setHours(0, 0, 0, 0);
+        const endOfYesterday = new Date(startOfYesterday);
+        endOfYesterday.setHours(23, 59, 59, 999);
+        where.createdAt = { gte: startOfYesterday, lte: endOfYesterday };
+      } else if (timeFilter === 'LAST_10_DAYS') {
+        const tenDaysAgo = new Date();
+        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+        tenDaysAgo.setHours(0, 0, 0, 0);
+        where.createdAt = { gte: tenDaysAgo };
+      }
+    }
 
     const orders = await prisma.order.findMany({
       where,
