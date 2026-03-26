@@ -39,22 +39,28 @@ export default function AdminDashboard() {
         });
         const menuItems = await menuRes.json();
         
-        // Calculate stats
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        // Calculate stats using strict IST bounds
+        const ISTOffset = 5.5 * 60 * 60 * 1000;
+        const nowUTC = new Date();
+        const nowIST = new Date(nowUTC.getTime() + ISTOffset);
         
-        const todayOrders = orders.filter((o: any) => new Date(o.createdAt) >= today);
+        const startOfTodayIST = new Date(nowIST);
+        startOfTodayIST.setUTCHours(0, 0, 0, 0);
+        
+        const startOfTodayUTC = new Date(startOfTodayIST.getTime() - ISTOffset);
+        
+        const todayOrders = orders.filter((o: any) => new Date(o.createdAt) >= startOfTodayUTC);
         const revenue = todayOrders.reduce((sum: number, o: any) => sum + o.totalAmount, 0);
-        const pending = orders.filter((o: any) => o.status === 'PENDING').length;
+        const pending = todayOrders.filter((o: any) => o.status === 'PENDING').length;
         
         setStats({
-          totalOrders: orders.length,
+          totalOrders: todayOrders.length,
           pendingOrders: pending,
           todayRevenue: revenue,
           menuItems: menuItems.length
         });
         
-        setRecentOrders(orders.slice(0, 5));
+        setRecentOrders(todayOrders.slice(0, 5));
       } catch (error) {
         console.error('Failed to fetch dashboard data', error);
       } finally {
@@ -72,7 +78,7 @@ export default function AdminDashboard() {
       <div className="admin-header">
         <h1>Dashboard Overview</h1>
         <div style={{ color: 'var(--text-secondary)' }}>
-          {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          {new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </div>
       </div>
 
@@ -88,7 +94,7 @@ export default function AdminDashboard() {
         <div className="stat-card">
           <div className="stat-icon orders">📦</div>
           <div className="stat-info">
-            <h4>Total Orders</h4>
+            <h4>Today's Orders</h4>
             <div className="stat-value">{stats.totalOrders}</div>
           </div>
         </div>
@@ -144,7 +150,7 @@ export default function AdminDashboard() {
                     </span>
                   </td>
                   <td style={{ color: 'var(--text-secondary)' }}>
-                    {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(order.createdAt).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true })}
                   </td>
                 </tr>
               ))
