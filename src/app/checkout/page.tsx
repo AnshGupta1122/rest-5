@@ -146,7 +146,10 @@ export default function CheckoutPage() {
               
               <div className="qr-container" style={{ margin: '0 auto', maxWidth: '200px' }}>
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(restaurantSettings.upi_qr_data || 'upi://pay?pa=restaurant@upi')}&margin=0`} 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
+                    (restaurantSettings.upi_qr_data || 'upi://pay?pa=restaurant@upi') + 
+                    ((restaurantSettings.upi_qr_data || '').includes('?') ? '&am=' : '?am=') + orderTotal
+                  )}&margin=0`} 
                   alt="UPI QR Code" 
                   style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '8px' }}
                 />
