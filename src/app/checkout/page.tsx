@@ -47,7 +47,12 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...checkoutData,
+          customerName: checkoutData.customerName,
+          customerPhone: checkoutData.customerPhone,
+          customerEmail: checkoutData.customerEmail,
+          customerAddress: checkoutData.customerAddress,
+          tableNumber: checkoutData.tableNumber,
+          type: checkoutData.orderType,
           items: items.map(item => ({ id: item.id, quantity: item.quantity })),
           paymentMethod: paymentMethod,
           notes: paymentMethod === 'UPI' 
