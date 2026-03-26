@@ -121,12 +121,21 @@ export default function MyOrdersPage() {
                     <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                       Payment: {order.paymentMethod} {order.isPaid && <span style={{ color: 'var(--success)' }}>(Paid ✓)</span>}
                     </div>
-                    <button 
-                      onClick={() => handleReorder(order.items)} 
-                      className="btn btn-outline btn-sm"
-                    >
-                      Reorder Items
-                    </button>
+                    <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
+                      <Link 
+                        href={`/orders/${order.id}`}
+                        className="btn btn-primary btn-sm"
+                        style={{ padding: '8px 16px' }}
+                      >
+                        Track Order
+                      </Link>
+                      <button 
+                        onClick={() => handleReorder(order.items)} 
+                        className="btn btn-outline btn-sm"
+                      >
+                        Reorder
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

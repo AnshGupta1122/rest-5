@@ -60,8 +60,9 @@ function OrderConfirmationContent() {
           </button>
         </div>
         
-        <div style={{ marginTop: 'var(--space-xl)', paddingTop: 'var(--space-lg)', borderTop: '1px solid var(--border-light)' }}>
-          <Link href="/" className="btn btn-outline">Return to Home</Link>
+        <div style={{ marginTop: 'var(--space-xl)', paddingTop: 'var(--space-lg)', borderTop: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+          <Link href={`/orders/${orderId}`} className="btn btn-primary">🛵 Track My Order</Link>
+          <Link href="/" className="btn btn-outline" style={{ border: 'none' }}>Return to Home</Link>
         </div>
       </div>
     </div>
