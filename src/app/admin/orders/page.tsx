@@ -70,6 +70,34 @@ export default function AdminOrders() {
     }
   };
 
+  const handleSendBill = async (orderId: string) => {
+    try {
+      const btn = document.getElementById(`btn-send-${orderId}`);
+      if (btn) btn.innerHTML = '<span class="spinner" style="width: 14px; height: 14px; display: inline-block; border-width: 2px;"></span> Sending...';
+      
+      const res = await fetch(`/api/admin/orders/${orderId}/send-bill`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      
+      if (btn) btn.innerHTML = '<span style="fontSize: 1.1rem">✓</span> Sent!';
+      setTimeout(() => {
+        if (btn) btn.innerHTML = '<span style="fontSize: 1.1rem">📱</span> Send Bill';
+      }, 3000);
+
+      if (!res.ok) throw new Error(data.error || 'Failed to send bill');
+      
+      if (data.devMode) {
+        alert('Bill sent in DEV MODE. Check your terminal console to see the resulting message.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Could not send bill. See console for details.');
+      const btn = document.getElementById(`btn-send-${orderId}`);
+      if (btn) btn.innerHTML = '<span style="fontSize: 1.1rem">📱</span> Send Bill';
+    }
+  };
+
   if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
 
   return (
@@ -78,13 +106,13 @@ export default function AdminOrders() {
         <h1>Order Management</h1>
         
         <div className="category-tabs" style={{ marginBottom: 0 }}>
-          {['ALL', 'PENDING', 'CONFIRMED', 'PREPARING', 'READY', 'DELIVERED', 'CANCELLED'].map(status => (
+          {['ALL', 'PENDING', 'CONFIRMED', 'PREPARING', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'].map(status => (
             <button 
               key={status}
               className={`category-tab ${filter === status ? 'active' : ''}`}
               onClick={() => { setLoading(true); setFilter(status); }}
             >
-              {status}
+              {status.replace(/_/g, ' ')}
             </button>
           ))}
         </div>
@@ -177,42 +205,28 @@ export default function AdminOrders() {
                         fontSize: '0.85rem',
                         cursor: 'pointer',
                         color: order.status === 'PENDING' ? '#e65100' :
-                               order.status === 'READY' ? '#2e7d32' : 
+                               (order.status === 'READY' || order.status === 'OUT_FOR_DELIVERY') ? '#2e7d32' : 
                                order.status === 'CANCELLED' ? '#d50000' : 'inherit'
                       }}
                     >
                       <option value="PENDING">Pending</option>
                       <option value="CONFIRMED">Confirmed</option>
                       <option value="PREPARING">Preparing</option>
-                      <option value="READY">Ready</option>
+                      <option value="OUT_FOR_DELIVERY">Out for Delivery</option>
                       <option value="DELIVERED">Delivered</option>
                       <option value="CANCELLED">Cancelled</option>
                     </select>
                   </td>
                   <td>
                     <div className="actions">
-                      <a 
-                        href={`https://wa.me/${order.customerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(
-                          `*Spice Garden - Order Bill*\n` +
-                          `Order ID: #${order.id.slice(-6).toUpperCase()}\n` +
-                          `Name: ${order.customerName}\n` +
-                          (order.type === 'DINE_IN' ? `Table: ${order.tableNumber}\n` : `Type: Delivery\n`) +
-                          `Status: ${order.status}\n\n` +
-                          `*Items ordered:*\n` +
-                          order.items.map((i: any) => `${i.quantity}x ${i.name} - ₹${i.price * i.quantity}`).join('\n') +
-                          `\n\n*Subtotal:* ₹${order.totalAmount}\n` +
-                          `*Taxes (5%):* ₹${Math.round(order.totalAmount * 0.05)}\n` +
-                          `*Total Paid:* ₹${order.totalAmount + Math.round(order.totalAmount * 0.05)}\n` +
-                          `*Payment via:* ${order.paymentMethod}\n\n` +
-                          `Thank you for ordering with us!`
-                        )}`}
-                        target="_blank"
-                        rel="noreferrer"
+                      <button 
+                        id={`btn-send-${order.id}`}
+                        onClick={() => handleSendBill(order.id)}
                         className="btn btn-success btn-sm"
-                        style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '4px', border: 'none', cursor: 'pointer' }}
                       >
                         <span style={{ fontSize: '1.1rem' }}>📱</span> Send Bill
-                      </a>
+                      </button>
                     </div>
                   </td>
                 </tr>

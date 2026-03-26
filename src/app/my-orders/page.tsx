@@ -101,7 +101,7 @@ export default function MyOrdersPage() {
                       <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>{order.type.replace('_', ' ')} Order</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <span className={`status-badge ${order.status.toLowerCase()}`}>{order.status}</span>
+                      <span className={`status-badge ${order.status.toLowerCase()}`}>{order.status.replace(/_/g, ' ')}</span>
                       <div style={{ marginTop: '8px', fontWeight: 700, fontSize: '1.2rem', color: 'var(--primary)' }}>₹{order.totalAmount}</div>
                     </div>
                   </div>
