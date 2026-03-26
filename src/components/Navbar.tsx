@@ -1,16 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useEffect, useState } from 'react';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { totalItems } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [customerToken, setCustomerToken] = useState<string | null>(null);
+
+  const handleLogout = () => {
+    localStorage.removeItem('customer_token');
+    localStorage.removeItem('customer_phone');
+    setCustomerToken(null);
+    router.push('/');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,9 +52,11 @@ export default function Navbar() {
         <div className="navbar-links">
           <Link href="/">Home</Link>
           <Link href="/menu">Menu</Link>
-          <Link href="/my-orders">My Orders</Link>
-          {!customerToken && (
-            <Link href="/login">Login</Link>
+          <Link href="/my-orders">📦 My Orders</Link>
+          {customerToken ? (
+            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0 }}>🚪 Logout</button>
+          ) : (
+            <Link href="/login">👤 Login</Link>
           )}
           <Link href="/cart" className="cart-btn">
             🛒 Cart
@@ -66,9 +76,11 @@ export default function Navbar() {
           <div className="navbar-links open" style={{ display: 'flex' }}>
             <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
             <Link href="/menu" onClick={() => setIsMobileMenuOpen(false)}>Menu</Link>
-            <Link href="/my-orders" onClick={() => setIsMobileMenuOpen(false)}>My Orders</Link>
-            {!customerToken && (
-              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
+            <Link href="/my-orders" onClick={() => setIsMobileMenuOpen(false)}>📦 My Orders</Link>
+            {customerToken ? (
+              <button onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0, textAlign: 'left' }}>🚪 Logout</button>
+            ) : (
+              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>👤 Login</Link>
             )}
             <Link href="/cart" onClick={() => setIsMobileMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               🛒 Cart 
