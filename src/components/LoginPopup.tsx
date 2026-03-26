@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginPopup() {
   const [show, setShow] = useState(false);
+  const [isForced, setIsForced] = useState(false);
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -12,12 +13,30 @@ export default function LoginPopup() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('customer_token');
-    if (!token) {
-      // Small delay so the page renders first
-      const timer = setTimeout(() => setShow(true), 500);
-      return () => clearTimeout(timer);
-    }
+    const checkLogin = () => {
+      const token = localStorage.getItem('customer_token');
+      const isCartPage = window.location.pathname === '/cart' || window.location.pathname === '/checkout';
+
+      if (!token) {
+        // Small delay so the page renders first
+        const timer = setTimeout(() => {
+          setShow(true);
+          if (isCartPage) setIsForced(true);
+        }, 500);
+        return () => clearTimeout(timer);
+      }
+    };
+
+    checkLogin();
+
+    // Listen for manual trigger
+    const handleTrigger = (e: any) => {
+      setShow(true);
+      if (e.detail?.force) setIsForced(true);
+    };
+
+    window.addEventListener('trigger-customer-login', handleTrigger);
+    return () => window.removeEventListener('trigger-customer-login', handleTrigger);
   }, []);
 
   if (!show) return null;
@@ -102,16 +121,18 @@ export default function LoginPopup() {
           </button>
         </form>
 
-        <button onClick={() => setShow(false)}
-          style={{
-            display: 'block', width: '100%', textAlign: 'center',
-            marginTop: '12px', padding: '8px', background: 'none',
-            border: 'none', cursor: 'pointer', fontSize: '0.85rem',
-            color: 'var(--text-secondary, #666)'
-          }}
-        >
-          Skip for now
-        </button>
+        {!isForced && (
+          <button onClick={() => setShow(false)}
+            style={{
+              display: 'block', width: '100%', textAlign: 'center',
+              marginTop: '12px', padding: '8px', background: 'none',
+              border: 'none', cursor: 'pointer', fontSize: '0.85rem',
+              color: 'var(--text-secondary, #666)'
+            }}
+          >
+            Skip for now
+          </button>
+        )}
       </div>
 
       <style jsx>{`

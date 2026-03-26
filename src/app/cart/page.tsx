@@ -3,7 +3,7 @@
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function CartPage() {
   const { items, totalAmount, totalItems, updateQuantity, removeItem } = useCart();
@@ -17,6 +17,20 @@ export default function CartPage() {
   const [customerAddress, setCustomerAddress] = useState('');
   const [locationCoords, setLocationCoords] = useState<{lat: number, lng: number} | null>(null);
   const [locating, setLocating] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Load customer info if logged in
+  useEffect(() => {
+    const token = localStorage.getItem('customer_token');
+    const name = localStorage.getItem('customer_name');
+    const phone = localStorage.getItem('customer_phone');
+    
+    if (token && phone) {
+      setIsLoggedIn(true);
+      if (name) setCustomerName(name);
+      setCustomerPhone(phone);
+    }
+  }, []);
   
   if (items.length === 0) {
     return (
@@ -127,6 +141,8 @@ export default function CartPage() {
                 value={customerName}
                 onChange={e => setCustomerName(e.target.value)}
                 placeholder="Enter your name"
+                readOnly={isLoggedIn}
+                style={isLoggedIn ? { background: 'var(--bg-subtle)', cursor: 'not-allowed' } : {}}
               />
             </div>
             
@@ -139,6 +155,8 @@ export default function CartPage() {
                 onChange={e => setCustomerPhone(e.target.value)}
                 placeholder="10-digit number"
                 pattern="[0-9]{10}"
+                readOnly={isLoggedIn}
+                style={isLoggedIn ? { background: 'var(--bg-subtle)', cursor: 'not-allowed' } : {}}
               />
             </div>
 
@@ -219,13 +237,27 @@ export default function CartPage() {
                 <span>₹{totalAmount + Math.round(totalAmount * 0.05)}</span>
               </div>
               
-              <button 
-                type="submit" 
-                className="btn btn-primary" 
-                style={{ width: '100%', marginTop: 'var(--space-lg)' }}
-              >
-                Proceed to Checkout
-              </button>
+              {isLoggedIn ? (
+                <button 
+                  type="submit" 
+                  className="btn btn-primary" 
+                  style={{ width: '100%', marginTop: 'var(--space-lg)' }}
+                >
+                  Proceed to Checkout
+                </button>
+              ) : (
+                <button 
+                  type="button" 
+                  className="btn btn-primary" 
+                  style={{ width: '100%', marginTop: 'var(--space-lg)' }}
+                  onClick={() => {
+                    const event = new CustomEvent('trigger-customer-login', { detail: { force: true } });
+                    window.dispatchEvent(event);
+                  }}
+                >
+                  Login to Place Order
+                </button>
+              )}
             </div>
           </form>
         </div>
