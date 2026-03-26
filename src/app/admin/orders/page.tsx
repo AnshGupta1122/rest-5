@@ -144,7 +144,7 @@ export default function AdminOrders() {
                       {order.type.replace('_', ' ')}
                     </span>
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                      {new Date(order.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                      {new Date(order.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'short', timeStyle: 'short' })}
                     </div>
                   </td>
                   <td>
