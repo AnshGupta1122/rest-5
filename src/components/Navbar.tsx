@@ -44,9 +44,8 @@ export default function Navbar() {
         <div className="navbar-links">
           <Link href="/">Home</Link>
           <Link href="/menu">Menu</Link>
-          {customerToken ? (
-            <Link href="/my-orders">My Orders</Link>
-          ) : (
+          <Link href="/my-orders">My Orders</Link>
+          {!customerToken && (
             <Link href="/login">Login</Link>
           )}
           <Link href="/cart" className="cart-btn">
@@ -67,9 +66,8 @@ export default function Navbar() {
           <div className="navbar-links open" style={{ display: 'flex' }}>
             <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
             <Link href="/menu" onClick={() => setIsMobileMenuOpen(false)}>Menu</Link>
-            {customerToken ? (
-              <Link href="/my-orders" onClick={() => setIsMobileMenuOpen(false)}>My Orders</Link>
-            ) : (
+            <Link href="/my-orders" onClick={() => setIsMobileMenuOpen(false)}>My Orders</Link>
+            {!customerToken && (
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
             )}
             <Link href="/cart" onClick={() => setIsMobileMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
