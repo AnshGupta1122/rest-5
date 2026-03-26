@@ -87,7 +87,7 @@ export default function MenuPage() {
               Veg Only
             </button>
             <button 
-              className={`veg-toggle ${nonVegOnly ? 'active' : ''}`}
+              className={`nonveg-toggle ${nonVegOnly ? 'active' : ''}`}
               onClick={() => { setNonVegOnly(!nonVegOnly); setVegOnly(false); }}
               style={{ marginLeft: 'var(--space-md)' }}
             >
