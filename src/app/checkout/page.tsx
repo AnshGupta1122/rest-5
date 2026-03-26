@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
-import Script from 'next/script';
+import Image from 'next/image';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -34,7 +34,12 @@ export default function CheckoutPage() {
 
   const orderTotal = totalAmount + Math.round(totalAmount * 0.05);
 
-  const confirmOrder = async (razorpayPaymentId?: string) => {
+  const confirmOrder = async () => {
+    if (!utr || utr.trim().length < 6) {
+      alert('Please enter a valid Transaction / UTR Number from your payment app.');
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch('/api/orders', {
@@ -43,8 +48,8 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           ...checkoutData,
           items: items.map(item => ({ id: item.id, quantity: item.quantity })),
-          paymentMethod: 'Razorpay',
-          notes: razorpayPaymentId ? `Razorpay Payment ID: ${razorpayPaymentId} | ${checkoutData.notes || ''}` : checkoutData.notes,
+          paymentMethod: 'UPI',
+          notes: `UTR: ${utr.trim()}${checkoutData.notes ? ' | ' + checkoutData.notes : ''}`,
         }),
       });
 
@@ -64,128 +69,85 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleRazorpayPayment = async () => {
-    setLoading(true);
-
-    try {
-      // 1. Create order on our backend
-      const res = await fetch('/api/razorpay', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: orderTotal }),
-      });
-
-      const orderData = await res.json();
-
-      if (!res.ok) {
-        if (orderData.missing_keys) {
-          alert('Razorpay keys are missing in the .env file. Running in fallback mode.');
-          // Fallback just to place order
-          confirmOrder('fallback-dev-mode');
-          return;
-        }
-        throw new Error(orderData.error || 'Failed to initialize payment');
-      }
-
-      // 2. Initialize Razorpay popup
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_YOURKEY',
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: restaurantSettings.restaurant_name || 'Spice Garden',
-        description: 'Order Payment',
-        order_id: orderData.id,
-        handler: async function (response: any) {
-          // Success callback
-          await confirmOrder(response.razorpay_payment_id);
-        },
-        prefill: {
-          name: checkoutData.customerName,
-          contact: checkoutData.customerPhone,
-        },
-        theme: {
-          color: '#e65100', // Matches brand primary color
-        },
-      };
-
-      const rzp = new (window as any).Razorpay(options);
-      
-      rzp.on('payment.failed', function (response: any) {
-        alert(`Payment failed: ${response.error.description}`);
-      });
-
-      rzp.open();
-    } catch (err: any) {
-      console.error(err);
-      alert(err.message || 'Payment initiation failed.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <>
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+    <div className="checkout-page">
+      <div className="page-title" style={{ paddingBottom: 'var(--space-md)' }}>
+        <h1>Checkout</h1>
+      </div>
       
-      <div className="checkout-page">
-        <div className="page-title" style={{ paddingBottom: 'var(--space-md)' }}>
-          <h1>Checkout</h1>
-        </div>
-        
-        <div className="checkout-grid">
-          <div className="order-summary" style={{ position: 'static' }}>
-            <h3>Order Details</h3>
-            
-            <div style={{ marginBottom: 'var(--space-lg)' }}>
-              <p><strong>Name:</strong> {checkoutData.customerName}</p>
-              <p><strong>Phone:</strong> {checkoutData.customerPhone}</p>
-              <p><strong>Type:</strong> {checkoutData.orderType === 'DINE_IN' ? `Dine In (Table ${checkoutData.tableNumber})` : 'Delivery'}</p>
-              {checkoutData.orderType === 'DELIVERY' && (
-                <p><strong>Address:</strong> {checkoutData.customerAddress}</p>
-              )}
-            </div>
-            
-            <h4 style={{ marginBottom: 'var(--space-sm)' }}>Items</h4>
-            <ul style={{ listStyle: 'none', marginBottom: 'var(--space-lg)', padding: 0 }}>
-              {items.map(item => (
-                <li key={item.id} style={{ display: 'flex', justifyContent: 'space-between', padding: 'var(--space-xs) 0', borderBottom: '1px dashed var(--border-light)' }}>
-                  <span>{item.quantity}x {item.name}</span>
-                  <span>₹{item.price * item.quantity}</span>
-                </li>
-              ))}
-            </ul>
-            
-            <div className="summary-row total">
-              <span>Total Payable</span>
-              <span>₹{orderTotal}</span>
-            </div>
+      <div className="checkout-grid">
+        <div className="order-summary" style={{ position: 'static' }}>
+          <h3>Order Details</h3>
+          
+          <div style={{ marginBottom: 'var(--space-lg)' }}>
+            <p><strong>Name:</strong> {checkoutData.customerName}</p>
+            <p><strong>Phone:</strong> {checkoutData.customerPhone}</p>
+            <p><strong>Type:</strong> {checkoutData.orderType === 'DINE_IN' ? `Dine In (Table ${checkoutData.tableNumber})` : 'Delivery'}</p>
+            {checkoutData.orderType === 'DELIVERY' && (
+              <p><strong>Address:</strong> {checkoutData.customerAddress}</p>
+            )}
           </div>
           
-          <div className="payment-card">
-            <h3>Online Payment</h3>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-lg)' }}>
-              Pay securely via UPI, Credit/Debit Card, or Netbanking using Razorpay.
-            </p>
-            
-            <div style={{ background: 'var(--bg-subtle)', padding: 'var(--space-lg)', borderRadius: 'var(--radius-md)', textAlign: 'center', marginBottom: 'var(--space-xl)' }}>
-               <h2 style={{ color: 'var(--primary)', marginBottom: '4px' }}>₹{orderTotal}</h2>
-               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Secured by Razorpay</p>
-            </div>
-            
-            <button 
-              className="btn btn-primary btn-lg" 
-              style={{ width: '100%', fontSize: '1.2rem', padding: '16px' }}
-              onClick={handleRazorpayPayment}
-              disabled={loading}
-            >
-              {loading ? 'Processing...' : 'Pay Now'}
-            </button>
-            <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-md)' }}>
-              By tapping Pay Now, you agree to our terms and conditions.
-            </p>
+          <h4 style={{ marginBottom: 'var(--space-sm)' }}>Items</h4>
+          <ul style={{ listStyle: 'none', marginBottom: 'var(--space-lg)', padding: 0 }}>
+            {items.map(item => (
+              <li key={item.id} style={{ display: 'flex', justifyContent: 'space-between', padding: 'var(--space-xs) 0', borderBottom: '1px dashed var(--border-light)' }}>
+                <span>{item.quantity}x {item.name}</span>
+                <span>₹{item.price * item.quantity}</span>
+              </li>
+            ))}
+          </ul>
+          
+          <div className="summary-row total">
+            <span>Total Payable</span>
+            <span>₹{orderTotal}</span>
           </div>
         </div>
+        
+        <div className="payment-card">
+          <h3>Payment Verification</h3>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-lg)' }}>
+            Please scan the QR code using any UPI app (GPay, PhonePe, Paytm) to make the payment.
+          </p>
+          
+          <div className="qr-container">
+            <img 
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(restaurantSettings.upi_qr_data || 'upi://pay?pa=restaurant@upi')}&margin=0`} 
+              alt="UPI QR Code" 
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            />
+          </div>
+          
+          <div className="upi-id">
+            UPI ID: {restaurantSettings.upi_id || 'restaurant@upi'}
+          </div>
+
+          <div className="form-group" style={{ marginTop: 'var(--space-lg)', marginBottom: 'var(--space-lg)' }}>
+            <label style={{ fontWeight: 600 }}>Enter Transaction ID (UTR) <span style={{ color: 'var(--error)' }}>*</span></label>
+            <input 
+              type="text" 
+              value={utr}
+              onChange={(e) => setUtr(e.target.value)}
+              placeholder="e.g. 312345678901" 
+              className="input-field"
+              style={{ marginTop: '8px', padding: '12px', width: '100%', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}
+              required 
+            />
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+              Your order will only be confirmed after verifying this transaction number.
+            </p>
+          </div>
+          
+          <button 
+            className="btn btn-primary btn-lg" 
+            style={{ width: '100%' }}
+            onClick={confirmOrder}
+            disabled={loading || utr.trim().length < 6}
+          >
+            {loading ? 'Processing...' : 'Confirm Payment & Order'}
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
