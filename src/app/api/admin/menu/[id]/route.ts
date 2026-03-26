@@ -11,13 +11,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     const { id } = await params;
     const body = await request.json();
-    const { name, description, price, image, categoryId, isVeg, isAvailable, isFeatured } = body;
+    const { name, description, price, image, imagePosition, categoryId, isVeg, isAvailable, isFeatured } = body;
 
     const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (price !== undefined) updateData.price = parseFloat(price);
     if (image !== undefined) updateData.image = image;
+    if (imagePosition !== undefined) updateData.imagePosition = imagePosition;
     if (categoryId !== undefined) updateData.categoryId = categoryId;
     if (isVeg !== undefined) updateData.isVeg = isVeg;
     if (isAvailable !== undefined) updateData.isAvailable = isAvailable;

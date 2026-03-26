@@ -10,14 +10,14 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, description, price, image, categoryId, isVeg, isFeatured } = body;
+    const { name, description, price, image, imagePosition, categoryId, isVeg, isFeatured } = body;
 
     if (!name || !price || !categoryId) {
       return NextResponse.json({ error: 'Name, price, and category are required' }, { status: 400 });
     }
 
     const item = await prisma.menuItem.create({
-      data: { name, description, price: parseFloat(price), image, categoryId, isVeg: isVeg ?? true, isFeatured: isFeatured ?? false },
+      data: { name, description, price: parseFloat(price), image, imagePosition: imagePosition || 'center', categoryId, isVeg: isVeg ?? true, isFeatured: isFeatured ?? false },
     });
 
     return NextResponse.json(item, { status: 201 });

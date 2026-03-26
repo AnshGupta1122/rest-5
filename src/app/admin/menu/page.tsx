@@ -16,6 +16,7 @@ export default function AdminMenu() {
     description: '',
     price: '',
     image: '🍽️',
+    imagePosition: 'center',
     categoryId: '',
     isVeg: true,
     isAvailable: true,
@@ -59,6 +60,7 @@ export default function AdminMenu() {
         description: item.description || '',
         price: item.price.toString(),
         image: item.image || '🍽️',
+        imagePosition: item.imagePosition || 'center',
         categoryId: item.categoryId,
         isVeg: item.isVeg,
         isAvailable: item.isAvailable,
@@ -71,6 +73,7 @@ export default function AdminMenu() {
         description: '',
         price: '',
         image: '🍽️',
+        imagePosition: 'center',
         categoryId: categories[0]?.id || '',
         isVeg: true,
         isAvailable: true,
@@ -271,9 +274,17 @@ export default function AdminMenu() {
                     style={{ fontSize: '0.85rem' }}
                   />
                   {formData.image && formData.image.startsWith('data:') && (
-                    <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <img src={formData.image} alt="Preview" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--border)' }} />
-                      <button type="button" style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer', fontSize: '0.8rem' }} onClick={() => setFormData({...formData, image: '🍽️'})}>Remove</button>
+                    <div style={{ marginTop: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                        <img src={formData.image} alt="Preview" style={{ width: 60, height: 60, objectFit: 'cover', objectPosition: formData.imagePosition, borderRadius: '8px', border: '1px solid var(--border)' }} />
+                        <button type="button" style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer', fontSize: '0.8rem' }} onClick={() => setFormData({...formData, image: '🍽️'})}>Remove</button>
+                      </div>
+                      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginRight: '4px', lineHeight: '24px' }}>Position:</span>
+                        {['top', 'center', 'bottom'].map(pos => (
+                          <button key={pos} type="button" onClick={() => setFormData({...formData, imagePosition: pos})} style={{ padding: '2px 8px', fontSize: '0.75rem', border: '1px solid var(--border)', borderRadius: '4px', cursor: 'pointer', background: formData.imagePosition === pos ? 'var(--primary)' : 'transparent', color: formData.imagePosition === pos ? 'white' : 'inherit' }}>{pos.charAt(0).toUpperCase() + pos.slice(1)}</button>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>

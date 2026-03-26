@@ -10,6 +10,7 @@ interface MenuCardProps {
     description: string | null;
     price: number;
     image: string | null;
+    imagePosition?: string;
     isVeg: boolean;
     isFeatured: boolean;
   };
@@ -25,7 +26,7 @@ export default function MenuCard({ item }: MenuCardProps) {
     <div className="menu-card">
       <div className="menu-card-image">
         {item.image && (item.image.startsWith('data:') || item.image.startsWith('http')) ? (
-          <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: item.imagePosition || 'center' }} />
         ) : (
           <span className="emoji">{item.image || '🍽️'}</span>
         )}

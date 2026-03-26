@@ -19,18 +19,19 @@ model Category {
 }
 
 model MenuItem {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  price       Float
-  image       String?
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  isAvailable Boolean  @default(true)
-  isVeg       Boolean  @default(true)
-  isFeatured  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  price         Float
+  image         String?
+  imagePosition String   @default("center")
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  isAvailable   Boolean  @default(true)
+  isVeg         Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Order {
