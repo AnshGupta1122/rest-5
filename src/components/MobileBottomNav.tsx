@@ -4,9 +4,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 
+import { useEffect, useState } from 'react';
+
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const { totalItems } = useCart();
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {
+    setIsLogged(!!localStorage.getItem('customer_token'));
+  }, [pathname]);
 
   // Don't show on admin pages
   if (pathname.startsWith('/admin')) return null;
@@ -14,7 +21,7 @@ export default function MobileBottomNav() {
   const tabs = [
     { href: '/', icon: '🏠', label: 'Home' },
     { href: '/menu', icon: '📋', label: 'Menu' },
-    { href: '/my-orders', icon: '📦', label: 'My Orders' },
+    { href: isLogged ? '/my-orders' : '/login', icon: '👤', label: 'Profile' },
     { href: '/cart', icon: '🛒', label: 'Cart', badge: totalItems },
   ];
 

@@ -50,23 +50,33 @@ export default function MenuPage() {
 
   return (
     <>
-      <div className="page-title">
+      <div style={{
+        background: 'var(--bg-card)', 
+        padding: 'calc(var(--navbar-height) + var(--space-md)) var(--space-lg) var(--space-md)',
+        position: 'sticky', top: 0, zIndex: 100,
+        borderBottom: '1px solid var(--border-light)',
+        boxShadow: 'var(--shadow-sm)'
+      }}>
+        <div className="search-box" style={{ maxWidth: 'var(--max-width)', margin: '0 auto', flex: 1, position: 'relative' }}>
+          <span className="search-icon" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🔍</span>
+          <input 
+            type="text" 
+            placeholder="Search for 'Cuisines' or 'Dishes'" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ width: '100%', padding: '14px 16px 14px 48px', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '1rem', background: 'var(--bg-subtle)' }}
+          />
+        </div>
+      </div>
+
+      <div className="page-title" style={{ paddingTop: 'var(--space-xl)' }}>
         <h1>Our Menu</h1>
         <p>Discover our wide selection of authentic Indian dishes.</p>
       </div>
 
-      <div className="section" style={{ paddingTop: 'var(--space-lg)' }}>
+      <div className="section" style={{ paddingTop: 'var(--space-sm)' }}>
         <div className="section-inner">
-          <div className="menu-filters">
-            <div className="search-box">
-              <span className="search-icon">🔍</span>
-              <input 
-                type="text" 
-                placeholder="Search for dishes..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+          <div className="menu-filters" style={{ justifyContent: 'flex-start' }}>
             
             <button 
               className={`veg-toggle ${vegOnly ? 'active' : ''}`}

@@ -1586,7 +1586,38 @@ img {
 
 @media (max-width: 768px) {
   :root {
-    --navbar-height: 64px;
+    --navbar-height: 0px;
+
+    /* Behrouz Dark Theme for Mobile */
+    --bg: #2a0800;
+    --bg-card: #3a0d01;
+    --bg-elevated: #461102;
+    --bg-subtle: #461102;
+    --border: #591603;
+    --border-light: #591603;
+    --text: #fdf5e6;
+    --text-secondary: #dcbfa3;
+    --text-muted: #a88d74;
+    --primary: #f4b41a;
+    --primary-light: #ffc259;
+    --primary-dark: #cc8400;
+    
+    /* Veg/Non-veg adjust for dark bg */
+    --veg: #4caf50;
+    --non-veg: #f44336;
+  }
+  
+  .navbar {
+    display: none !important;
+  }
+
+  /* Make bottom nav match */
+  .mobile-bottom-nav {
+    background: #1a0500 !important;
+    border-top: 1px solid #3a0d01 !important;
+  }
+  .mobile-bottom-nav-item.active {
+    color: #f4b41a !important;
   }
 
   .hero h1 { font-size: 2.5rem; }
