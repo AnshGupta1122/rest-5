@@ -10,6 +10,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [siteName, setSiteName] = useState('Spice Garden');
+  const [siteIcon, setSiteIcon] = useState('🌶️');
 
   // Check authentication
   useEffect(() => {
@@ -32,6 +33,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .then(res => res.json())
       .then(data => {
         if (data.restaurant_name) setSiteName(data.restaurant_name);
+        if (data.restaurant_icon) setSiteIcon(data.restaurant_icon);
       })
       .catch(err => console.error(err));
     }
@@ -82,7 +84,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="admin-sidebar-logo">
-          {siteName}
+          <span style={{ marginRight: '6px' }}>{siteIcon}</span>{siteName}
           <small>Admin Panel</small>
         </div>
 

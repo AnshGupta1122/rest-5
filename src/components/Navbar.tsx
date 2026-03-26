@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useEffect, useState } from 'react';
 
-export default function Navbar({ siteName = 'Spice Garden' }: { siteName?: string }) {
+export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️' }: { siteName?: string, siteIcon?: string }) {
   const pathname = usePathname();
   const router = useRouter();
   const { totalItems } = useCart();
@@ -45,7 +45,7 @@ export default function Navbar({ siteName = 'Spice Garden' }: { siteName?: strin
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-inner">
         <Link href="/" className="navbar-logo">
-          <span>🌶️</span> {siteName}
+          <span>{siteIcon}</span> {siteName}
         </Link>
 
         {/* Desktop Menu */}

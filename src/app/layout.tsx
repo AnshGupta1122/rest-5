@@ -33,16 +33,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   let siteName = 'Spice Garden';
+  let siteIcon = '🌶️';
   try {
     const nameSetting = await prisma.settings.findUnique({ where: { key: 'restaurant_name' } });
+    const iconSetting = await prisma.settings.findUnique({ where: { key: 'restaurant_icon' } });
     if (nameSetting?.value) siteName = nameSetting.value;
+    if (iconSetting?.value) siteIcon = iconSetting.value;
   } catch(e) {}
   return (
     <html lang="en">
       <body className={`${inter.variable} ${playfair.variable}`}>
         <CartProvider>
           <LoginPopup />
-          <Navbar siteName={siteName} />
+          <Navbar siteName={siteName} siteIcon={siteIcon} />
           <main>{children}</main>
           <Footer />
           <MobileBottomNav />

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 export default function AdminSettings() {
   const [settings, setSettings] = useState({
     restaurant_name: '',
+    restaurant_icon: '',
     restaurant_tagline: '',
     restaurant_phone: '',
     restaurant_address: '',
@@ -27,6 +28,7 @@ export default function AdminSettings() {
         const data = await res.json();
         setSettings({
           restaurant_name: data.restaurant_name || '',
+          restaurant_icon: data.restaurant_icon || '',
           restaurant_tagline: data.restaurant_tagline || '',
           restaurant_phone: data.restaurant_phone || '',
           restaurant_address: data.restaurant_address || '',
@@ -97,6 +99,17 @@ export default function AdminSettings() {
                   onChange={e => setSettings({...settings, restaurant_name: e.target.value})}
                   required 
                 />
+              </div>
+
+              <div className="form-group">
+                <label>Icon / Emoji</label>
+                <input 
+                  type="text" 
+                  value={settings.restaurant_icon}
+                  onChange={e => setSettings({...settings, restaurant_icon: e.target.value})}
+                  placeholder="🌶️, 🍔, ✨"
+                />
+                <small style={{ color: 'var(--text-muted)' }}>Symbol shown next to the name in the header.</small>
               </div>
               
               <div className="form-group">
