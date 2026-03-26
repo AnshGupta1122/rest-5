@@ -72,22 +72,38 @@ export async function GET(request: NextRequest) {
     if (type) where.type = type;
 
     if (timeFilter) {
+      // Calculate dates based on Indian Standard Time (IST) UTC+5:30
+      const ISTOffset = 5.5 * 60 * 60 * 1000;
+      const nowUTC = new Date();
+      
+      // Make a timezone-shifted date where UTC methods represent IST
+      const nowIST = new Date(nowUTC.getTime() + ISTOffset);
+      
+      const startOfTodayIST = new Date(nowIST);
+      startOfTodayIST.setUTCHours(0, 0, 0, 0);
+      
+      // Convert back to real UTC for database queries
+      const startOfTodayUTC = new Date(startOfTodayIST.getTime() - ISTOffset);
+
       if (timeFilter === 'TODAY') {
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
-        where.createdAt = { gte: startOfDay };
+        where.createdAt = { gte: startOfTodayUTC };
       } else if (timeFilter === 'YESTERDAY') {
-        const startOfYesterday = new Date();
-        startOfYesterday.setDate(startOfYesterday.getDate() - 1);
-        startOfYesterday.setHours(0, 0, 0, 0);
-        const endOfYesterday = new Date(startOfYesterday);
-        endOfYesterday.setHours(23, 59, 59, 999);
-        where.createdAt = { gte: startOfYesterday, lte: endOfYesterday };
+        const startOfYesterdayIST = new Date(startOfTodayIST);
+        startOfYesterdayIST.setUTCDate(startOfYesterdayIST.getUTCDate() - 1);
+        
+        const endOfYesterdayIST = new Date(startOfYesterdayIST);
+        endOfYesterdayIST.setUTCHours(23, 59, 59, 999);
+        
+        const startOfYesterdayUTC = new Date(startOfYesterdayIST.getTime() - ISTOffset);
+        const endOfYesterdayUTC = new Date(endOfYesterdayIST.getTime() - ISTOffset);
+        
+        where.createdAt = { gte: startOfYesterdayUTC, lte: endOfYesterdayUTC };
       } else if (timeFilter === 'LAST_10_DAYS') {
-        const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-        tenDaysAgo.setHours(0, 0, 0, 0);
-        where.createdAt = { gte: tenDaysAgo };
+        const tenDaysAgoIST = new Date(startOfTodayIST);
+        tenDaysAgoIST.setUTCDate(tenDaysAgoIST.getUTCDate() - 10);
+        
+        const tenDaysAgoUTC = new Date(tenDaysAgoIST.getTime() - ISTOffset);
+        where.createdAt = { gte: tenDaysAgoUTC };
       }
     }
 
