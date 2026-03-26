@@ -182,7 +182,11 @@ export default function AdminMenu() {
               <tr key={item.id}>
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
-                    <span style={{ fontSize: '1.5rem' }}>{item.image || '🍽️'}</span>
+                    {item.image && (item.image.startsWith('data:') || item.image.startsWith('http')) ? (
+                      <img src={item.image} alt={item.name} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: '6px' }} />
+                    ) : (
+                      <span style={{ fontSize: '1.5rem' }}>{item.image || '🍽️'}</span>
+                    )}
                     <div>
                       <div style={{ fontWeight: 600 }}>
                         {item.name}
@@ -247,13 +251,31 @@ export default function AdminMenu() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Emoji/Icon</label>
+                  <label>Food Image</label>
                   <input 
-                    type="text" 
-                    value={formData.image} 
-                    onChange={e => setFormData({...formData, image: e.target.value})} 
-                    placeholder="e.g. 🍕"
+                    type="file" 
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      if (file.size > 500 * 1024) {
+                        alert('Image must be under 500KB. Please compress first.');
+                        return;
+                      }
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        setFormData({...formData, image: reader.result as string});
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                    style={{ fontSize: '0.85rem' }}
                   />
+                  {formData.image && formData.image.startsWith('data:') && (
+                    <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <img src={formData.image} alt="Preview" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--border)' }} />
+                      <button type="button" style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer', fontSize: '0.8rem' }} onClick={() => setFormData({...formData, image: '🍽️'})}>Remove</button>
+                    </div>
+                  )}
                 </div>
               </div>
               

@@ -24,10 +24,10 @@ export default function MenuCard({ item }: MenuCardProps) {
   return (
     <div className="menu-card">
       <div className="menu-card-image">
-        {item.image ? (
-          <span className="emoji">{item.image}</span>
+        {item.image && (item.image.startsWith('data:') || item.image.startsWith('http')) ? (
+          <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
-          <span className="emoji">🍽️</span>
+          <span className="emoji">{item.image || '🍽️'}</span>
         )}
         <div className={`menu-card-badge ${item.isVeg ? 'veg' : 'non-veg'}`}></div>
         {item.isFeatured && <div className="menu-card-featured">Special</div>}
