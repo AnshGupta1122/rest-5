@@ -58,10 +58,7 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
           <Link href="/menu">Menu</Link>
           <Link href="/my-orders">📦 My Orders</Link>
           {customerToken ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Welcome, <strong style={{ color: 'var(--primary)' }}>{customerName || 'Guest'}</strong></span>
-              <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0 }}>🚪 Logout</button>
-            </div>
+            <span style={{ color: 'var(--text-secondary)' }}>Welcome, <strong style={{ color: 'var(--primary)' }}>{customerName || 'Guest'}</strong></span>
           ) : (
             <Link href="/login">👤 Login</Link>
           )}
@@ -69,6 +66,9 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
             🛒 Cart
             {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
           </Link>
+          {customerToken && (
+            <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0, marginLeft: 'var(--space-sm)' }}>🚪 Logout</button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -85,10 +85,7 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
             <Link href="/menu" onClick={() => setIsMobileMenuOpen(false)}>Menu</Link>
             <Link href="/my-orders" onClick={() => setIsMobileMenuOpen(false)}>📦 My Orders</Link>
             {customerToken ? (
-              <>
-                <span style={{ color: 'var(--text-secondary)', padding: 'var(--space-md) 0' }}>Welcome, <strong style={{ color: 'var(--primary)' }}>{customerName || 'Guest'}</strong></span>
-                <button onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0, textAlign: 'left' }}>🚪 Logout</button>
-              </>
+              <span style={{ color: 'var(--text-secondary)', padding: 'var(--space-md) 0' }}>Welcome, <strong style={{ color: 'var(--primary)' }}>{customerName || 'Guest'}</strong></span>
             ) : (
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>👤 Login</Link>
             )}
@@ -96,6 +93,9 @@ export default function Navbar({ siteName = 'Spice Garden', siteIcon = '🌶️'
               🛒 Cart 
               {totalItems > 0 && <span style={{ background: 'var(--primary)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 'bold' }}>{totalItems}</span>}
             </Link>
+            {customerToken && (
+              <button onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 'var(--space-md) 0', textAlign: 'left', marginTop: 'var(--space-sm)', borderTop: '1px solid var(--border)' }}>🚪 Logout</button>
+            )}
           </div>
         )}
       </div>
