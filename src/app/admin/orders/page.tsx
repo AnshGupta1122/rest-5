@@ -8,6 +8,7 @@ export default function AdminOrders() {
   const [filter, setFilter] = useState('ALL');
   const [timeFilter, setTimeFilter] = useState('TODAY');
   const [siteName, setSiteName] = useState('Spice Garden');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchOrders = async () => {
     const token = localStorage.getItem('admin_token');
@@ -105,6 +106,22 @@ export default function AdminOrders() {
             <option value="LAST_10_DAYS">Last 10 Days</option>
             <option value="ALL_TIME">All Time</option>
           </select>
+
+          <input 
+            type="text" 
+            placeholder="Search Order ID, Name, Phone..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ 
+              padding: '8px 12px', 
+              borderRadius: '8px', 
+              border: '1px solid var(--border)', 
+              background: 'var(--bg-card)', 
+              color: 'var(--text)',
+              fontSize: '0.9rem',
+              minWidth: '220px'
+            }}
+          />
         </div>
         
         <div className="category-tabs" style={{ marginBottom: 0 }}>
@@ -133,9 +150,18 @@ export default function AdminOrders() {
             </tr>
           </thead>
           <tbody>
-            {orders.length > 0 ? (
-              orders.map(order => (
-                <tr key={order.id}>
+            {(() => {
+              const filteredOrders = orders.filter(o => {
+                if (!searchQuery.trim()) return true;
+                const q = searchQuery.toLowerCase();
+                return o.id.toLowerCase().includes(q) || 
+                       (o.customerName && o.customerName.toLowerCase().includes(q)) ||
+                       (o.customerPhone && o.customerPhone.includes(q));
+              });
+
+              return filteredOrders.length > 0 ? (
+                filteredOrders.map(order => (
+                  <tr key={order.id}>
                   <td>
                     <div style={{ fontFamily: 'monospace', fontWeight: 600, marginBottom: '4px' }}>
                       #{order.id.slice(-6).toUpperCase()}
@@ -261,13 +287,14 @@ export default function AdminOrders() {
                   </td>
                 </tr>
               ))
-            ) : (
-              <tr>
-                <td colSpan={6} style={{ textAlign: 'center', padding: 'var(--space-2xl)', color: 'var(--text-muted)' }}>
-                  No orders found.
-                </td>
-              </tr>
-            )}
+              ) : (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center', padding: 'var(--space-2xl)' }}>
+                    {searchQuery ? 'No orders found matching your search.' : 'No orders found for this filter.'}
+                  </td>
+                </tr>
+              );
+            })()}
           </tbody>
         </table>
       </div>
