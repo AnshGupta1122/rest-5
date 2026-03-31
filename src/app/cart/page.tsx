@@ -200,9 +200,23 @@ export default function CartPage() {
                     }
                     setLocating(true);
                     navigator.geolocation.getCurrentPosition(
-                      (pos) => {
-                        setLocationCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-                        setLocating(false);
+                      async (pos) => {
+                        const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        setLocationCoords(coords);
+                        
+                        try {
+                          // Reverse geocode to get human-readable address
+                          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.lat}&lon=${coords.lng}`);
+                          const data = await response.json();
+                          
+                          if (data && data.display_name) {
+                            setCustomerAddress(data.display_name);
+                          }
+                        } catch (error) {
+                          console.error("Geocoding failed:", error);
+                        } finally {
+                          setLocating(false);
+                        }
                       },
                       (err) => {
                         alert('Unable to get location. Please allow location access.');
@@ -213,7 +227,7 @@ export default function CartPage() {
                   }}
                   style={{ marginTop: '8px', padding: '12px 16px', fontSize: '1rem', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', cursor: 'pointer', background: locationCoords ? 'var(--veg)' : 'transparent', color: locationCoords ? '#fff' : 'var(--primary)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', width: '100%', justifyContent: 'center' }}
                 >
-                  {locating ? '📡 Getting location...' : locationCoords ? '✅ Location captured' : '📍 Use My Location'}
+                  {locating ? '📡 Getting address...' : locationCoords ? '✅ Address updated' : '📍 Use My Location'}
                 </button>
                 {locationCoords && (
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
